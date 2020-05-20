@@ -1,0 +1,170 @@
+@mixin respond($orient) {
+    @if($orient == porta)  {
+        @media only screen and (orientation: portrait) { @content; }
+    }
+    @if($orient == land)  {
+        @media only screen and (orientation: landscape) { @content; }
+    }
+  }
+
+
+.main{
+    /*for all pages*/
+    margin:0 1%;
+    padding:0 1%;
+    height: 100vh;
+    background: {
+    color: gainsboro;
+    repeat: no-repeat;
+    clip: border-box;
+    position: center;
+    }
+}
+
+.top{
+    width: 96%;
+    height: 25%;
+}
+#index {           /*index page -- pagina de inicio*/
+    @extend .main;
+        
+    background: {
+        image: url(../images/pexels-photo-tiger.jpeg);
+        size: cover;
+        attachment: fixed;
+    }
+    footer{
+        top: 92%;
+        bottom: 0;
+        }
+} 
+
+#blog{
+    @extend .main;
+    footer{
+    bottom: auto;
+    }
+}
+
+.mynavg{
+    float: right;
+    margin:1% 0;
+}
+
+
+
+.me {
+    width: 15%;
+    height: auto;
+    margin: 0;
+    padding: 1% 2%;
+    background-color: transparent;
+    font: {
+        family: Verdana, Geneva, Tahoma, sans-serif;
+        size: 0.8em;
+        style: italic;
+        }
+        @include respond(porta) {
+            display: none; 
+         }
+        @include respond(land) {
+            display: block; 
+         }
+    }
+
+
+    .myindex{
+        @extend .me;
+    color: rgb(250, 251, 252);
+    
+    }
+    .myblog{
+        @extend .me;
+        color: black;
+    }
+
+
+ .img-0 {
+    margin: auto;
+    padding: 0; 
+    border-radius: 50%; 
+    float: center;
+    width: 60%;
+ }
+
+
+
+
+  .phrase-index {
+    width: 25%;
+    height: auto;
+    margin: 2% auto;
+    padding: 0 1% 15% 1%;
+    float: left;
+    background-color: transparent;
+    font: {
+        family: Georgia, sans-serif;
+        size: 20x;
+        style: italic;
+        weight: 700;
+    }
+    @include respond(porta) {
+        color: maroon; 
+     }
+    @include respond(land) {
+        color:  white;
+     }
+  }
+
+@media only screen and (max-width: 768px){
+    .phrase-index{
+        margin: 5% 10% 0 2%;
+        font-size: 15px;
+    }
+}
+
+.myborder-table{
+    border: grey 1px solid;
+    padding: 1% 0 0 0;
+}
+
+#xuxing {
+    margin: 2% auto;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 70%;
+  
+    td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    
+    tr:nth-child(even){background-color: #f2f2f2;}
+        
+    th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        
+        background-color: #4CAF50;
+        color: white;
+    }
+}
+
+.first{
+    font-weight: bold;
+}
+
+
+footer {
+    position: absolute;
+    width: 96%;
+    margin: 0;
+    height: 8%;
+    background: {
+        color: #999;
+    }
+    .copyright {
+        text-align: center;
+        }
+}
