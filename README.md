@@ -13,3 +13,5 @@ It is the preference of this inexperienced student to use "class" selectors inst
 To meet project specifications, html tags and ID selectors were used, which could perhaps be considered far from good practice.
 
 The content is not intended to instruct the reader but to be functional for the project. Rather, it aims to make the reader look for more information on the subject.
+
+Video:  https://www.youtube.com/watch?v=tIRpwtpydXU&feature=youtu.be
