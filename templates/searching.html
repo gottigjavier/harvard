@@ -9,10 +9,17 @@
     {{ super() }}
 {% endblock %}
 
+
 {% block contents %}
     <div>
     <p class="display-4 p-1 mb-2 bg-info text-white text-center">Search a Book</p> 
     </div>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <h4 class="text-center">    {{ message }}  </h4>
+    </div>
+    {% endfor %}
+
         <div class="col-sm-5 my-1">
         <form action= "{{url_for('search')}}" method="post">
             <div class="form-group">

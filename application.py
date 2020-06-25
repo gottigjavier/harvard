@@ -53,7 +53,7 @@ def login():
             session["username"]= user.username
             session["nameuser"]= user.name
             flash('Already you have access!')
-            return redirect(url_for('index'))
+            return redirect(url_for('searching'))
         return render_template('login.html', form=form, message='Something went wrong, please try again.')
     return render_template('login.html', form=form)
 
