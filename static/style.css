@@ -99,6 +99,12 @@
     margin: 5% 10% 0 2%;
     font-size: 15px;
   }
+
+  .img-pakua {
+    width: 100%;
+    float: right;
+    margin: 2%;
+  }
 }
 .myborder-table {
   border: grey 1px solid;
