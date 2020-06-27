@@ -28,10 +28,6 @@ columns=("ISBN", "Title", "Author", "Year")
 def index():
     return render_template("index.html")
 
-@app.route("/prueba")
-def prueba():
-    return render_template("prueba.html", message2=g.user, message0= type(g.user))
-
 
 # Section: user management
 @app.before_request
@@ -194,7 +190,7 @@ def api(isbn):
     # Make sure Book with this ISBN exists.
     book_api= db.execute("SELECT * FROM books WHERE isbn=:isbn", {"isbn":isbn}).fetchone()
     if book_api is None:
-        abort(404, description="Resource not found")    
+        abort(404)    
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "gAj6mH7RFp0SaDcMEQA8w", "isbns": book_api.isbn})
     data= res.json()
     goodreads_rating=data['books'][0]['average_rating']
