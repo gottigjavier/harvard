@@ -1,3 +1,47 @@
+.me, .myblog, .myindex {
+  width: 15%;
+  height: auto;
+  margin: 0;
+  padding: 1% 2%;
+  background-color: transparent;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 0.8em;
+  font-style: italic;
+}
+@media only screen and (orientation: portrait) {
+  .me, .myblog, .myindex {
+    display: none;
+  }
+}
+@media only screen and (orientation: landscape) {
+  .me, .myblog, .myindex {
+    display: block;
+  }
+}
+
+.phrase-index {
+  width: 25%;
+  height: auto;
+  margin: 2% auto;
+  padding: 0 1% 15% 1%;
+  float: left;
+  background-color: transparent;
+  font-family: Georgia, sans-serif;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 700;
+}
+@media only screen and (orientation: portrait) {
+  .phrase-index {
+    color: maroon;
+  }
+}
+@media only screen and (orientation: landscape) {
+  .phrase-index {
+    color: white;
+  }
+}
+
 .main, #blog, #index {
   /*for all pages*/
   margin: 0 1%;
@@ -34,27 +78,6 @@
   margin: 1% 0;
 }
 
-.me, .myblog, .myindex {
-  width: 15%;
-  height: auto;
-  margin: 0;
-  padding: 1% 2%;
-  background-color: transparent;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 0.8em;
-  font-style: italic;
-}
-@media only screen and (orientation: portrait) {
-  .me, .myblog, .myindex {
-    display: none;
-  }
-}
-@media only screen and (orientation: landscape) {
-  .me, .myblog, .myindex {
-    display: block;
-  }
-}
-
 .myindex {
   color: #fafbfc;
 }
@@ -73,29 +96,6 @@
   border-radius: 50%;
   float: center;
   width: 60%;
-}
-
-.phrase-index {
-  width: 25%;
-  height: auto;
-  margin: 2% auto;
-  padding: 0 1% 15% 1%;
-  float: left;
-  background-color: transparent;
-  font-family: Georgia, sans-serif;
-  font-size: 20x;
-  font-style: italic;
-  font-weight: 700;
-}
-@media only screen and (orientation: portrait) {
-  .phrase-index {
-    color: maroon;
-  }
-}
-@media only screen and (orientation: landscape) {
-  .phrase-index {
-    color: white;
-  }
 }
 
 .img-pakua {

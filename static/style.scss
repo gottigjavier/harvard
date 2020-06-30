@@ -7,6 +7,47 @@
     }
 }
 
+.me {
+    width: 15%;
+    height: auto;
+    margin: 0;
+    padding: 1% 2%;
+    background-color: transparent;
+    font: {
+        family: Verdana, Geneva, Tahoma, sans-serif;
+        size: 0.8em;
+        style: italic;
+        }
+        @include respond(porta) {
+            display: none; 
+        }
+        @include respond(land) {
+            display: block; 
+        }
+    }
+
+
+    .phrase-index {
+        width: 25%;
+        height: auto;
+        margin: 2% auto;
+        padding: 0 1% 15% 1%;
+        float: left;
+        background-color: transparent;
+        font: {
+            family: Georgia, sans-serif;
+            size: 1em;
+            style: italic;
+            weight: 700;
+        }
+        @include respond(porta) {
+            color: maroon; 
+        }
+        @include respond(land) {
+            color:  white;
+        }
+    }
+    
 
 .main{
     /*for all pages*/
@@ -51,28 +92,6 @@
     margin:1% 0;
 }
 
-
-
-.me {
-    width: 15%;
-    height: auto;
-    margin: 0;
-    padding: 1% 2%;
-    background-color: transparent;
-    font: {
-        family: Verdana, Geneva, Tahoma, sans-serif;
-        size: 0.8em;
-        style: italic;
-        }
-        @include respond(porta) {
-            display: none; 
-         }
-        @include respond(land) {
-            display: block; 
-         }
-    }
-
-
     .myindex{
         @extend .me;
     color: rgb(250, 251, 252);
@@ -86,36 +105,12 @@
     text-decoration: underline;
 }
 
- .img-0 {
+.img-0 {
     margin: auto;
     padding: 0; 
     border-radius: 50%; 
     float: center;
     width: 60%;
- }
-
-
-
-
-  .phrase-index {
-    width: 25%;
-    height: auto;
-    margin: 2% auto;
-    padding: 0 1% 15% 1%;
-    float: left;
-    background-color: transparent;
-    font: {
-        family: Georgia, sans-serif;
-        size: 20x;
-        style: italic;
-        weight: 700;
-    }
-    @include respond(porta) {
-        color: maroon; 
-    }
-    @include respond(land) {
-        color:  white;
-    }
 }
 
 .img-pakua {
