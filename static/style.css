@@ -19,29 +19,49 @@
   }
 }
 
-.phrase-index {
-  width: 25%;
-  height: auto;
-  margin: 2% auto;
-  padding: 0 1% 15% 1%;
-  float: left;
+#phrase-index {
+  width: 30%;
+  height: 20%;
   background-color: transparent;
   font-family: Georgia, sans-serif;
-  font-size: 1em;
   font-style: italic;
   font-weight: 700;
 }
 @media only screen and (orientation: portrait) {
-  .phrase-index {
-    color: maroon;
+  #phrase-index {
+    float: center;
+    margin: 20%;
+    size: 1.5rem;
+    color: greenyellow;
   }
 }
 @media only screen and (orientation: landscape) {
-  .phrase-index {
+  #phrase-index {
+    size: 0.8rem;
+    margin: 5% auto;
+    padding: 0 1% 15% 1%;
+    float: left;
     color: white;
   }
 }
 
+@media only screen and (max-width: 1040px) {
+  #phrase-index {
+    float: center;
+    margin: auto;
+    font-size: 1em;
+  }
+
+  .img-pakua {
+    width: 100%;
+    float: bottom;
+    margin: 2%;
+  }
+
+  .pakua-pf {
+    width: 100%;
+  }
+}
 .main, #blog, #index {
   /*for all pages*/
   margin: 0 1%;
@@ -86,8 +106,9 @@
   color: black;
 }
 
-.subray {
+h1 {
   text-decoration: underline;
+  text-align: center;
 }
 
 .img-0 {
@@ -108,22 +129,6 @@
   width: 80%;
 }
 
-@media only screen and (max-width: 768px) {
-  .phrase-index {
-    margin: 5% 10% 0 2%;
-    font-size: 15px;
-  }
-
-  .img-pakua {
-    width: 100%;
-    float: bottom;
-    margin: 2%;
-  }
-
-  .pakua-pf {
-    width: 100%;
-  }
-}
 .myborder-table {
   border: grey 1px solid;
   padding: 1% 0 0 0;

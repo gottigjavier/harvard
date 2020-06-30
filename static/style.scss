@@ -27,27 +27,46 @@
     }
 
 
-    .phrase-index {
-        width: 25%;
-        height: auto;
-        margin: 2% auto;
+#phrase-index {
+    width: 30%;
+    height: 20%;
+    background-color: transparent;
+    font: {
+        family: Georgia, sans-serif;
+        style: italic;
+        weight: 700;
+    }
+    @include respond(porta) {
+        float: center;
+        margin: 20%;
+        size: 1.5rem;
+        color: greenyellow; 
+    }
+    @include respond(land) {
+        size: 0.8rem;
+        margin: 5% auto;
         padding: 0 1% 15% 1%;
         float: left;
-        background-color: transparent;
-        font: {
-            family: Georgia, sans-serif;
-            size: 1em;
-            style: italic;
-            weight: 700;
-        }
-        @include respond(porta) {
-            color: maroon; 
-        }
-        @include respond(land) {
-            color:  white;
-        }
+        color:  white;
     }
+}
     
+@media only screen and (max-width: 1040px){
+    #phrase-index{
+        float: center;
+        margin: auto;
+        font-size: 1em;
+    }
+    .img-pakua {
+        width: 100%;
+        float: bottom;
+        margin: 2%;
+    }
+    .pakua-pf{
+        width: 100%;
+    }
+}
+
 
 .main{
     /*for all pages*/
@@ -92,17 +111,19 @@
     margin:1% 0;
 }
 
-    .myindex{
-        @extend .me;
-    color: rgb(250, 251, 252);
-    
-    }
-    .myblog{
-        @extend .me;
-        color: black;
-    }
-.subray{
+.myindex{
+    @extend .me;
+    color: rgb(250, 251, 252);    
+}
+
+.myblog{
+    @extend .me;
+    color: black;
+}
+
+h1{
     text-decoration: underline;
+    text-align: center;
 }
 
 .img-0 {
@@ -121,21 +142,6 @@
 
 .pakua-pf{
     width: 80%;
-}
-
-@media only screen and (max-width: 768px){
-    .phrase-index{
-        margin: 5% 10% 0 2%;
-        font-size: 15px;
-    }
-    .img-pakua {
-        width: 100%;
-        float: bottom;
-        margin: 2%;
-    }
-    .pakua-pf{
-        width: 100%;
-    }
 }
 
 .myborder-table{
@@ -173,6 +179,7 @@
 
 footer {
     position: absolute;
+    //background-attachment: fixed;
     width: 96%;
     margin: 0;
     height: 8%;
