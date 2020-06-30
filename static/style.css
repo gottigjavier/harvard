@@ -63,6 +63,10 @@
   color: black;
 }
 
+.subray {
+  text-decoration: underline;
+}
+
 .img-0 {
   margin: auto;
   padding: 0;
@@ -94,6 +98,16 @@
   }
 }
 
+.img-pakua {
+  width: 100%;
+  float: right;
+  margin: 2%;
+}
+
+.pakua-pf {
+  width: 80%;
+}
+
 @media only screen and (max-width: 768px) {
   .phrase-index {
     margin: 5% 10% 0 2%;
@@ -104,6 +118,10 @@
     width: 100%;
     float: right;
     margin: 2%;
+  }
+
+  .pakua-pf {
+    width: 100%;
   }
 }
 .myborder-table {
