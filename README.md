@@ -14,4 +14,4 @@ To meet project specifications, html tags and ID selectors were used, which coul
 
 The content is not intended to instruct the reader but to be functional for the project. Rather, it aims to make the reader look for more information on the subject.
 
-Video:  https://www.youtube.com/watch?v=tIRpwtpydXU&feature=youtu.be
+Screencast: https://www.youtube.com/watch?v=WMoUorDMTK8
