@@ -1,3 +1,20 @@
+@media only screen and (max-width: 1040px) {
+  #phrase-index {
+    float: center;
+    margin: auto;
+    font-size: 0.9em;
+  }
+
+  .img-pakua {
+    width: 100%;
+    float: bottom;
+    margin: 2%;
+  }
+
+  .pakua-pf {
+    width: 100%;
+  }
+}
 .me, .myblog, .myindex {
   width: 15%;
   height: auto;
@@ -29,7 +46,7 @@
 }
 @media only screen and (orientation: portrait) {
   #phrase-index {
-    float: center;
+    float: right;
     margin: 20%;
     size: 1.5rem;
     color: greenyellow;
@@ -45,23 +62,6 @@
   }
 }
 
-@media only screen and (max-width: 1040px) {
-  #phrase-index {
-    float: center;
-    margin: auto;
-    font-size: 1em;
-  }
-
-  .img-pakua {
-    width: 100%;
-    float: bottom;
-    margin: 2%;
-  }
-
-  .pakua-pf {
-    width: 100%;
-  }
-}
 .main, #blog, #index {
   /*for all pages*/
   margin: 0 1%;
