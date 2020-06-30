@@ -46,3 +46,5 @@ The "mypackages" folder contains the file "mymodels.py", which is the module tha
 The "loginuser.py" file, also included in the "mypackages" folder, allows user management.
 
 The "application.py" file handles all the logic between the parts of the application, allowing interaction between the client, server and Goodreads API.
+
+Sceencast: https://www.youtube.com/watch?v=j8TCWAj2cqo
