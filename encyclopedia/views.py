@@ -5,6 +5,7 @@ from markdown2 import Markdown
 
 from . import util
 
+# https://cs50.harvard.edu/web/2020/projects/1/wiki/
 
 markdowner= Markdown()
 
@@ -17,7 +18,7 @@ def entry(request, title):
     entry= util.get_entry(title)
     if entry == None: 
         message= f'The entry << {title} >> does not exist. You can create a new entry or search.'
-        return render(request, "encyclopedia/notfound.html", {
+        return render(request, "encyclopedia/error.html", {
             "message": message
         })
     else:
@@ -26,8 +27,8 @@ def entry(request, title):
             "title": title
         })
 
-def notfound(request, title, message):
-    return render(request, "encyclopedia/notfound.html", {
+def error(request, title, message):
+    return render(request, "encyclopedia/error.html", {
         "title": title,
         "message": message
     })
@@ -55,9 +56,8 @@ def create(request):
         cont=request.POST.get("content")
         entry_list= util.list_entries()
         if tit in entry_list:
-            message= f"The entry {tit} already exist! Choose another title to create a new entry, or edit the existing entry."
-            return notfound(request, tit, message)
-            
+            message= f"The entry < {tit} > already exist! Choose another title to create a new entry, or edit the existing entry."
+            return error(request, tit, message)            
         util.save_entry(tit, cont)
         return entry(request, tit)
     return render(request, "encyclopedia/create.html", {
@@ -86,6 +86,7 @@ def rand(request):
     entry_list= util.list_entries()
     if entry_list:
         chance= random.randint(0, len(entry_list)-1)
+    return entry(request, entry_list[chance])
     return render(request, "encyclopedia/rand.html", {
         "entry": entry_list[chance]
     })
