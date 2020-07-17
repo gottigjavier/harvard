@@ -9,11 +9,13 @@ from . import util
 
 markdowner= Markdown()
 
+# Index
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
 
+# Entry
 def entry(request, title):
     entry= util.get_entry(title)
     if entry == None: 
@@ -27,12 +29,7 @@ def entry(request, title):
             "title": title
         })
 
-def error(request, title, message):
-    return render(request, "encyclopedia/error.html", {
-        "title": title,
-        "message": message
-    })
-
+# Search
 def search(request):
     query= request.GET.get("q")
     entry_list= util.list_entries()
@@ -49,7 +46,7 @@ def search(request):
         "query": query
     })
 
-
+# New Entry
 def create(request):
     if request.method == "POST":
         tit=request.POST.get("title")
@@ -64,6 +61,7 @@ def create(request):
         "message": 'New Entry'
     })
 
+# Editing
 def edit(request):
     tit= request.GET.get("titl")
     content= util.get_entry(tit)
@@ -80,14 +78,16 @@ def edited(request):
         util.save_entry(new_tit, new_cont)
         return entry(request, new_tit)
 
-
-
+# Random Entry
 def rand(request):
     entry_list= util.list_entries()
     if entry_list:
         chance= random.randint(0, len(entry_list)-1)
     return entry(request, entry_list[chance])
-    return render(request, "encyclopedia/rand.html", {
-        "entry": entry_list[chance]
-    })
 
+# Errors
+def error(request, title, message):
+    return render(request, "encyclopedia/error.html", {
+        "title": title,
+        "message": message
+    })
