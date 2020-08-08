@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+
+    <div class="row">
+        {% for auction in auctions %}
+        <br>
+        <div class="col rounded border m-1">
+        <h5> {{ auction.name }} </h5>
+        <img src="/auctions/media/{{ auction.image }}" alt="Image" width="200" height="200">
+        <h5>Description</h5>
+        <p> {{auction.description}} </p>
+        {% if auction.actual_bid.ofert %}
+            <h5>Actual Bid: $ {{ auction.actual_bid.ofert }}  </h5>
+            <p> (Base Bid: $ {{auction.init_bid}}) </p>
+        {% else %}
+            <h5>No Bids </h5>
+            <p> (Base Bid: $ {{auction.init_bid}}) </p>
+        {% endif %}
+        <br><br>
+        </div>
+        {% endfor %}
+        </div>
+{% endblock %}
