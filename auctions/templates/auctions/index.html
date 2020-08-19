@@ -1,25 +1,49 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
+    <a href="{% url 'allcategories' %}">
+        <h2>Categories </h2>
+    </a>
+    <ul class="nav" >
+            <li class="nav-item">
+                {% for category in categories %}
+                    <a href="{% url 'categories' category %}" class=" border m-1 rounded">
+                        {{category}}
+                    </a>
+                {% endfor %}
+            </li>
+    </ul>
+    <h3 class="text-center" >{{message}}</h3>
+    {% if not auctions %}
+        <h4>{{message1}}</h4>
+    {% else %}
     <div class="row">
         {% for auction in auctions %}
-        <br>
-        <div class="col rounded border m-1">
-        <h5> {{ auction.name }} </h5>
-        <img src="/auctions/media/{{ auction.image }}" alt="Image" width="200" height="200">
-        <h5>Description</h5>
-        <p> {{auction.description}} </p>
-        {% if auction.actual_bid.ofert %}
-            <h5>Actual Bid: $ {{ auction.actual_bid.ofert }}  </h5>
-            <p> (Base Bid: $ {{auction.init_bid}}) </p>
-        {% else %}
-            <h5>No Bids </h5>
-            <p> (Base Bid: $ {{auction.init_bid}}) </p>
-        {% endif %}
-        <br><br>
-        </div>
+            <br>
+            <a href="{% url 'auction' auction.id %}">
+            <div class="col-3 rounded border m-1" id="auction-box">
+                <h5> {{ auction.name }} </h5>
+                {% if auction.is_open %}
+                    <h5 class="p-2 mb-2 bg-success text-white rounded" >Active</h5>
+                {% else %}
+                    <h5 class="p-2 mb-2 bg-secondary text-white rounded" >Closed</h5>
+                {% endif %}
+                <img src="/auctions/media/{{ auction.image }}" alt="Image" width="200" height="200">
+            </a>
+                <div class="col rounded border m-1">
+                    <h5>Description</h5>
+                    <p> "{{auction.description}}" </p>
+                
+                    <p> (Base Bid: $ {{auction.init_bid}}) </p>
+                    {% for key, value in auctions_bids.items %}
+                        {% if key == auction.id %}
+                            <h5>Actual Bid: $ {{ value.bid }}  </h5>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <br><br>
+            </div>
         {% endfor %}
-        </div>
+    </div>
+    {% endif %}
 {% endblock %}

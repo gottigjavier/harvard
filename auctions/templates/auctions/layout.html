@@ -22,7 +22,16 @@
             </li>
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'newlisting' %}">New Listing</a>
+                    <a class="nav-link" href="{% url 'listall' %}">All Listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'following' %}">Watchlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'newauction' %}">New Listing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'closedauctions' %}">Closed Listings</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
