@@ -1,48 +1,67 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <a href="{% url 'allcategories' %}">
-        <h2>Categories </h2>
+    
+    <a class="text-decoration-none" href="{% url 'allcategories' %}">
+        <div class="btn btn-secondary p-1 mb-2" >
+        <h3 >Categories </h3>
+        </div>
     </a>
     <ul class="nav" >
             <li class="nav-item">
                 {% for category in categories %}
-                    <a href="{% url 'categories' category %}" class=" border m-1 rounded">
+                    <a href="{% url 'categories' category %}" class="btn btn-outline-secondary px-1">
                         {{category}}
                     </a>
                 {% endfor %}
             </li>
     </ul>
-    <h3 class="text-center" >{{message}}</h3>
+    <h3 class="text-center mb-5" >{{message}}</h3>
     {% if not auctions %}
-        <h4>{{message1}}</h4>
+        <h4 class="alert alert-primary m-5 text-center" >{{message1}}</h4>
+        {% if user.is_authenticated %}
+            <h4 class="alert alert-primary m-5 text-center" > <span> Try 
+                <a class="nav-link d-inline" href="{% url 'closedauctions' %}">
+                    Closed Listings
+                </a></span>
+            </h4>
+        {% else %}
+            <h4 class="alert alert-primary m-5 text-center" >
+                <a class="nav-link d-inline" href="{% url 'login' %}">
+                    Log in
+                </a>to access the closed lists</h4>
+        {% endif %}    
     {% else %}
     <div class="row">
         {% for auction in auctions %}
             <br>
-            <a href="{% url 'auction' auction.id %}">
+            <a class="text-decoration-none" href="{% url 'auction' auction.id %}">
             <div class="col-3 rounded border m-1" id="auction-box">
-                <h5> {{ auction.name }} </h5>
+                <h5 class="text-decoration-none text-muted" > {{ auction.name }} </h5>
                 {% if auction.is_open %}
                     <h5 class="p-2 mb-2 bg-success text-white rounded" >Active</h5>
                 {% else %}
                     <h5 class="p-2 mb-2 bg-secondary text-white rounded" >Closed</h5>
                 {% endif %}
                 <img src="/auctions/media/{{ auction.image }}" alt="Image" width="200" height="200">
-            </a>
-                <div class="col rounded border m-1">
-                    <h5>Description</h5>
-                    <p> "{{auction.description}}" </p>
+            
+                <div class="mt-3 text-muted">
+                    <p class="font-italic" > "{{auction.description}}" </p>
                 
-                    <p> (Base Bid: $ {{auction.init_bid}}) </p>
+                    <p class="font-weight-normal"> (Base Bid: $ {{auction.init_bid}}) </p>
                     {% for key, value in auctions_bids.items %}
                         {% if key == auction.id %}
-                            <h5>Actual Bid: $ {{ value.bid }}  </h5>
+                            {% if auction.is_open %}
+                                <h5 class="font-weight-bold alert alert-success"> <b> Actual Bid: $ {{ value.bid }} </b> </h5>
+                            {% else %}
+                                <h5 class="font-weight-bold alert alert-danger"> <b> Final Bid: $ {{ value.bid }} </b> </h5>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                 </div>
-                <br><br>
+                <br><br></a>
             </div>
+            
         {% endfor %}
     </div>
     {% endif %}

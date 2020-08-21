@@ -14,9 +14,11 @@ urlpatterns = [
     path("following", views.following, name="following"),
     path("followadd", views.followadd, name="followadd"),
     path("followremove", views.followremove, name="followremove"),
-    path("active", views.active, name="active"),
+    path("delivered", views.delivered, name="delivered"),
+    path("deleted", views.deleted, name="deleted"),
     path("close", views.close, name="close"),
     path("closedauctions", views.closedauctions, name="closedauctions"),
     path("newcomment", views.newcomment, name="newcomment"),
-    path("auction/<int:id>", views.auction, name="auction")
+    path("auction/<int:id>", views.auction, name="auction"),
+    path("error", views.error, name="error")
 ]

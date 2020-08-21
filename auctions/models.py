@@ -13,6 +13,7 @@ class Auction(models.Model):
     description = models.CharField(max_length=300)
     init_bid = models.DecimalField(max_digits=9, decimal_places=2, null=True)
     is_open = models.BooleanField(default=True)
+    delivered = models.BooleanField(default=False)
     created = models.DateTimeField(default=datetime.now)
     offerer = models.ForeignKey(User, related_name='owner', on_delete=models.CASCADE)
     follower = models.ManyToManyField(User)
