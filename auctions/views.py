@@ -351,7 +351,6 @@ def newcomment(request):
         n_id = request.POST['new']
         comm = Comment()
         auction = Auction.objects.get(id=n_id)
-        print(auction.id)
         comm.comment = request.POST['newcommen']
         if comm.comment != '':
             comm.for_auction = auction
