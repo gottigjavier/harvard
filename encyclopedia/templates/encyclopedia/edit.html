@@ -1,0 +1,19 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    New Page
+{% endblock %}
+
+
+{% block body %}
+    <h3><b> Editor </b></h3>
+    
+    <form action="{% url 'edited' %}" method="POST">
+        {% csrf_token %} 
+        <h1>Entry: {{titles}} </h1>
+        <textarea class="border border-primary" name="content" id="content" rows="20" cols="30">
+        {{content}}
+        </textarea><br>
+        <input id="btsubmit" class="btn btn-success" type="submit" value="Submit"/>
+    </form>
+{% endblock %}

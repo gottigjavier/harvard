@@ -1,0 +1,23 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{title}}
+{% endblock %}
+
+
+{% block body %}
+<br><br>
+<div class="alert alert-warning">
+    {{message}}
+</div>
+<br>
+    {% if title %}
+    <ul>
+        <li>
+        <a href="{% url 'entry' title %}">
+            {{ title }}
+        </a>
+        </li>
+    </ul>
+        {% endif %}
+{% endblock %}

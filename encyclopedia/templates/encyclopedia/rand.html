@@ -1,0 +1,18 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Random Page
+{% endblock %}
+
+{% block body %}
+    <h1>Random Page</h1>
+
+    <br> 
+
+    <ul>
+        <li>   
+            <a href="{% url 'entry' entry %}">
+            {{ entry }}
+        </li>
+    </ul>
+{% endblock %}
