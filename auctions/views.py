@@ -282,8 +282,9 @@ def newauction(request):
         if auction.description == '':
             auction.description = 'No description'
         try:
+            max_value = 9999999.99
             auction.init_bid = abs(Decimal(request.POST["init_bid"]))
-            if auction.init_bid == 0.00:
+            if auction.init_bid == 0.00 or auction.init_bid > max_value:
                 auction.init_bid = 0.01
         except:
             auction.init_bid = 0.01
