@@ -48,7 +48,10 @@ function compose_email(recipients="", subject="", body="", date='') {
   document.querySelector('#compose-body').value = body;
 
 
-  document.querySelector('#send').onclick = send_email; 
+  //document.querySelector('#send').onclick = send_email; 
+  // idem
+  document.querySelector('#send').addEventListener('click', send_email);
+
 }
 
 function send_email(){
