@@ -1,16 +1,38 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Posts
 
 
 def index(request):
     return render(request, "network/index.html")
 
+def posts(request):
+    posts = Posts.objects.all()
+    posts = posts.order_by("-created").all()
+    return JsonResponse([post.serialize() for post in posts], safe=False)
 
+
+def all_profiles(request):
+    usser = User.objects.all()
+    posts = Posts.objects.all()
+    uss = User.authoruser
+    po = Posts.author
+    p = type(po)
+    post = type(posts[2].author.authoruser)
+    
+    print(uss)
+    print(po)
+    print(p)
+    print(post)
+
+    return JsonResponse([usse.serialize() for usse in usser], safe=False)
+
+# User Manager ----------------------------------------------------
 def login_view(request):
     if request.method == "POST":
 
@@ -61,3 +83,5 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+# ----------------------------------------------------------------
