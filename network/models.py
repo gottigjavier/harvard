@@ -35,5 +35,5 @@ class Posts(models.Model):
             "text": self.text,
             "author": self.author.username,
             "created": self.created.strftime("%b %-d %Y, %-I:%M %p"),
-            "likes": [likes.username for likes in self.likes.all()]
+            "likes": [likes.id for likes in self.likes.all()]
         } 

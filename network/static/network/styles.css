@@ -1,0 +1,17 @@
+#posts_view {
+    background-color: snow;
+}
+
+.post-style {
+    background-color: gainsboro;
+}
+
+.icon-red {
+    font-size: 1rem; 
+    color: Tomato;
+}
+
+.icon-black {
+    font-size: 1rem; 
+    color: black;
+}

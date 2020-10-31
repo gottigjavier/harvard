@@ -11,7 +11,7 @@ from .models import User, Posts
 def index(request):
     return render(request, "network/index.html")
 
-def posts(request):
+def all_posts(request):
     posts = Posts.objects.all()
     posts = posts.order_by("-created").all()
     return JsonResponse([post.serialize() for post in posts], safe=False)
@@ -19,17 +19,6 @@ def posts(request):
 
 def all_profiles(request):
     usser = User.objects.all()
-    posts = Posts.objects.all()
-    uss = User.authoruser
-    po = Posts.author
-    p = type(po)
-    post = type(posts[2].author.authoruser)
-    
-    print(uss)
-    print(po)
-    print(p)
-    print(post)
-
     return JsonResponse([usse.serialize() for usse in usser], safe=False)
 
 # User Manager ----------------------------------------------------
