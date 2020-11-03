@@ -28,10 +28,10 @@
                     </li>
                 {% endif %}
                 <li id="all-posts" class="nav-item">
-                  <a class="nav-link" href="{% url 'index' %}">All Posts</a>
+                  <a class="nav-link" href="#">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
-                    <li class="nav-item">
+                    <li id="all-authors" class="nav-item">
                         <a class="nav-link" href="#">All Authors</a>
                     </li>
                     <li class="nav-item">

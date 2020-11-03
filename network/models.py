@@ -7,19 +7,31 @@ class User(AbstractUser):
     following = models.ManyToManyField('self', blank=True, default='')
     followers = models.ManyToManyField('self', blank=True, default='')
     myposts = models.ManyToManyField('Posts', related_name='myposts', blank=True, default='')
+    image = models.ImageField(null=True, blank=True)
     
     def __str__(self):
         return self.username
 
     def serialize(self):
-        return {
-            "id": self.id,
-            "username": self.username,
-            "date_joined": self.date_joined.strftime("%b %-d %Y, %-I:%M %p"),
-            "myposts": [myposts.id for myposts in self.myposts.all()],
-            "following": [following.username for following in self.following.all()],
-            "followers": [followers.username for followers in self.followers.all()]
-        }         
+        if (self.image):
+            return {
+                "id": self.id,
+                "username": self.username,
+                "image": self.image.url,
+                "date_joined": self.date_joined.strftime("%b %-d %Y, %-I:%M %p"),
+                "myposts": [myposts.id for myposts in self.myposts.all()],
+                "following": [following.username for following in self.following.all()],
+                "followers": [followers.username for followers in self.followers.all()]
+            } 
+        else:
+            return {
+                "id": self.id,
+                "username": self.username,
+                "date_joined": self.date_joined.strftime("%b %-d %Y, %-I:%M %p"),
+                "myposts": [myposts.id for myposts in self.myposts.all()],
+                "following": [following.username for following in self.following.all()],
+                "followers": [followers.username for followers in self.followers.all()]
+            }         
 
 
 class Posts(models.Model):

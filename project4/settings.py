@@ -120,3 +120,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Images are saved in '/network/media/' because branch should match the file structure of the 
+# unzipped distribution code as originally received. 
+
+MEDIA_URL= '/network/media/'
+MEDIA_ROOT= os.path.join(BASE_DIR + '/network/', 'media')
+

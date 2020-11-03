@@ -11,26 +11,30 @@ from .models import User, Posts
 def index(request):
     return render(request, "network/index.html")
 
-def all_posts(request):
-    posts = Posts.objects.all()
-    posts = posts.order_by("-created").all()
-    pos = [post.serialize() for post in posts]
+def posts_box(request, postsbox):
+    if postsbox == 'all-posts':
+        all_posts = Posts.objects.all()
+        all_posts = all_posts.order_by("-created").all()
+        posts = [post.serialize() for post in all_posts]
 
-    usser = User.objects.all()
-    uss = ([usse.serialize() for usse in usser])
+        all_users = User.objects.all()
+        users = ([user.serialize() for user in all_users])
 
-    for p in pos:
-        for u in uss:
-            if p['author'] == u['username']:
-                p['author'] = u
+        for post in posts:
+            for user in users:
+                if post['author'] == user['username']:
+                    post['author'] = user
 
-    return JsonResponse( pos ,safe=False)
+
+    return JsonResponse( posts ,safe=False)
 
 
 def all_profiles(request):
-    usser = User.objects.all()
-    usser = usser.order_by("username").all()
-    return JsonResponse([usse.serialize() for usse in usser], safe=False)
+    users = User.objects.all()
+    users = users.order_by("username").all()
+    for user in users:
+        print(user.image)
+    return JsonResponse([user.serialize() for user in users], safe=False)
 
 # User Manager ----------------------------------------------------
 def login_view(request):
