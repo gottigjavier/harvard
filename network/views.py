@@ -14,11 +14,22 @@ def index(request):
 def all_posts(request):
     posts = Posts.objects.all()
     posts = posts.order_by("-created").all()
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+    pos = [post.serialize() for post in posts]
+
+    usser = User.objects.all()
+    uss = ([usse.serialize() for usse in usser])
+
+    for p in pos:
+        for u in uss:
+            if p['author'] == u['username']:
+                p['author'] = u
+
+    return JsonResponse( pos ,safe=False)
 
 
 def all_profiles(request):
     usser = User.objects.all()
+    usser = usser.order_by("username").all()
     return JsonResponse([usse.serialize() for usse in usser], safe=False)
 
 # User Manager ----------------------------------------------------

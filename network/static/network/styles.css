@@ -3,15 +3,44 @@
 }
 
 .post-style {
-    background-color: gainsboro;
+    background-color: antiquewhite !important;
 }
 
-.icon-red {
+.span-red {
     font-size: 1rem; 
-    color: Tomato;
+    color: tomato;
 }
 
-.icon-black {
+.span-black {
     font-size: 1rem; 
     color: black;
+}
+
+.span-green {
+    font-size: 1rem; 
+    color: lawngreen !important;
+}
+
+.span-blue {
+    font-size: 1rem; 
+    color: powderblue;
+}
+
+.span-orange {
+    font-size: 1rem; 
+    color: orange;
+}
+
+.user-style {
+    width: 33% !important;
+    display: inline-flex;
+    
+}
+
+.user-row {
+    display: inline-flex;
+}
+
+.user-icon {
+    font-size: 3rem;
 }

@@ -19,7 +19,7 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <input id="box-user" type="hidden" value={{ user.id }}> 
+                        <input id="box-user" type="hidden" value={{ user }}> 
                         <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% else %}
@@ -27,7 +27,7 @@
                         <a class="nav-link" href="#"><strong id="box-user">Visitor</strong></a>
                     </li>
                 {% endif %}
-                <li class="nav-item">
+                <li id="all-posts" class="nav-item">
                   <a class="nav-link" href="{% url 'index' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
