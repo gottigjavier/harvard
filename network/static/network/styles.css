@@ -6,28 +6,38 @@
     background-color: antiquewhite !important;
 }
 
+.span-icon{
+    font-size: 1.3rem;
+}
+.span-icon:hover{
+    color: goldenrod;
+    font-size: 1.5rem;
+}
+
+.profile-icon{
+    font-size: 1.3rem;
+}
+.profile-icon:hover{
+    color: goldenrod;
+}
+
 .span-red {
-    font-size: 1rem; 
     color: tomato;
 }
 
 .span-black {
-    font-size: 1rem; 
     color: black;
 }
 
 .span-green {
-    font-size: 1rem; 
     color: lawngreen !important;
 }
 
 .span-blue {
-    font-size: 1rem; 
     color: powderblue;
 }
 
 .span-orange {
-    font-size: 1rem; 
     color: orange;
 }
 

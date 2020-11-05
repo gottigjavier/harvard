@@ -10,5 +10,5 @@ urlpatterns = [
     path("register", views.register, name="register"),
 
     path("posts_box/<str:postsbox>", views.posts_box, name="posts_box"),
-    path("all_profiles", views.all_profiles, name="all_profiles")
+    path("profile_box/<str:profilebox>", views.profile_box, name="profile_box")
 ]

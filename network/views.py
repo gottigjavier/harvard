@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+import json
 
 from .models import User, Posts
 
@@ -12,6 +13,7 @@ def index(request):
     return render(request, "network/index.html")
 
 def posts_box(request, postsbox):
+    # List all posts
     if postsbox == 'all-posts':
         all_posts = Posts.objects.all()
         all_posts = all_posts.order_by("-created").all()
@@ -24,16 +26,41 @@ def posts_box(request, postsbox):
             for user in users:
                 if post['author'] == user['username']:
                     post['author'] = user
+            post['all_authors'] = True
 
+    # list of posts by authors i'm following
+    elif postsbox == 'follow-posts':
+        follow_posts = Posts.objects.filter(author__followers=request.user)
+        follow_posts = follow_posts.order_by("-created").all()
+        posts = ([follow_post.serialize() for follow_post in follow_posts])
+        follow_users = User.objects.filter(followers=request.user)
+        follow_usr = ([follow_user.serialize() for follow_user in follow_users])
+        for post in posts:
+            for user in follow_usr:
+                if post['author'] == user['username']:
+                    post['author'] = user
+            post['all_authors'] = True
+
+    # list of posts by a particular author
+    else:
+        author_posts = Posts.objects.filter(author__username=postsbox)
+        author_posts = author_posts.order_by("-created").all()
+        posts = [post.serialize() for post in author_posts]
+
+        post_user = User.objects.get(username=postsbox)
+        usr = (post_user.serialize())
+        
+        for post in posts:
+            post['author'] = usr
+            post['all_authors'] = False
 
     return JsonResponse( posts ,safe=False)
 
 
-def all_profiles(request):
-    users = User.objects.all()
-    users = users.order_by("username").all()
-    for user in users:
-        print(user.image)
+def profile_box(request, profilebox):
+    if profilebox == 'all-profiles':
+        users = User.objects.all()
+        users = users.order_by("username").all()
     return JsonResponse([user.serialize() for user in users], safe=False)
 
 # User Manager ----------------------------------------------------
