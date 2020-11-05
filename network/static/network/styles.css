@@ -6,19 +6,18 @@
     background-color: antiquewhite !important;
 }
 
-.span-icon{
+.span-icon, .profile-icon, .icon-m{
     font-size: 1.3rem;
 }
 .span-icon:hover{
     color: goldenrod;
     font-size: 1.5rem;
+    cursor: pointer;
 }
 
-.profile-icon{
-    font-size: 1.3rem;
-}
 .profile-icon:hover{
     color: goldenrod;
+    cursor: pointer;
 }
 
 .span-red {

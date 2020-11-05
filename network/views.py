@@ -59,9 +59,19 @@ def posts_box(request, postsbox):
 
 def profile_box(request, profilebox):
     if profilebox == 'all-profiles':
-        users = User.objects.all()
-        users = users.order_by("username").all()
-    return JsonResponse([user.serialize() for user in users], safe=False)
+        profiles = User.objects.all()
+        profiles = profiles.order_by("username").all()
+        return JsonResponse([profile.serialize() for profile in profiles], safe=False)
+    else:
+        profile = User.objects.get(username=profilebox)
+        profile = profile.serialize()
+        myposts = profile['myposts']
+        posts = Posts.objects.filter(pk__in=myposts)
+        posts = ([post.serialize() for post in posts])
+        profile['posts'] = posts
+        return JsonResponse(profile, safe=False)
+
+    
 
 # User Manager ----------------------------------------------------
 def login_view(request):
