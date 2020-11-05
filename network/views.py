@@ -69,7 +69,7 @@ def profile_box(request, profilebox):
         posts = Posts.objects.filter(pk__in=myposts)
         posts = ([post.serialize() for post in posts])
         profile['posts'] = posts
-        return JsonResponse(profile, safe=False)
+        return JsonResponse([profile], safe=False)
 
     
 

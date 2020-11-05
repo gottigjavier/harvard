@@ -6,9 +6,14 @@
     background-color: antiquewhite !important;
 }
 
-.span-icon, .profile-icon, .icon-m{
+.span-icon, .profile-icon{
     font-size: 1.3rem;
 }
+
+.icon-m, .follow-icon{
+    font-size: 1.6rem;
+}
+
 .span-icon:hover{
     color: goldenrod;
     font-size: 1.5rem;
@@ -17,6 +22,12 @@
 
 .profile-icon:hover{
     color: goldenrod;
+    cursor: pointer;
+}
+
+.follow-icon:hover{
+    color: goldenrod;
+    font-size: 1.8rem;
     cursor: pointer;
 }
 
