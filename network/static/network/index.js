@@ -29,12 +29,7 @@ document.addEventListener('click', event => {
     }
     
 });
-
-//-----------------------------------------------------------------------
-
-
-
-    
+//-----------------------------------------------------------------------    
 });
 
 
@@ -55,13 +50,16 @@ function posts_box(postsbox){
 
         posts.forEach(element => {
             const $br = document.createElement('br'),
-                $spanIcon = document.createElement('span'),
+                $spanLike = document.createElement('span'),
                 $iconLike = document.createElement('i'),
                 $spanFollow = document.createElement('span'),
                 $iconFollow = document.createElement('i'),
                 $listPost = document.createElement('div'),
                 $likes = document.createElement('div'),
                 $rowAuthor = document.createElement('div'),
+                $colAuthorL = document.createElement('div'),
+                $colAuthorC = document.createElement('div'),
+                $colAuthorR = document.createElement('div'),
                 $authorIcon = document.createElement('div'),
                 $author = document.createElement('div'),
                 $created = document.createElement('div'),
@@ -70,41 +68,41 @@ function posts_box(postsbox){
 
             $listPost.setAttribute('class', 'post-style m-3 py-2 px-5 shadow-lg bg-light rounded');
             $individualContainer.setAttribute('class', 'container');
-            $author.setAttribute('class', 'author-event px-1');
+            $author.setAttribute('class', 'author-event');
             $author.setAttribute('title', 'Click to profile');
             $rowAuthor.setAttribute('class', 'row');
+            $colAuthorL.setAttribute('class', 'col-md-1 m-0 pr-0 py-1');
+            $colAuthorC.setAttribute('class', 'col-md-1 mx-0 pl-0 py-1');
+            $colAuthorR.setAttribute('class', 'col-md-1 offset-md-9');
             $authorIcon.setAttribute('class', 'profile-icon');
-            $text.setAttribute('class', 'row p-2 font-italic');
+            $text.setAttribute('class', 'row p-2 font-italic my-3');
             $text.setAttribute('wrap', 'hard');
             $likesAndCreated.setAttribute('class', 'row')
             $created.setAttribute('class', 'col-sm-11 text-right blockquote-footer');
             $likes.setAttribute('class', 'col-sm-1 text-primary');
             
-
             if (currentUser && element.likes.toString().includes(currentUser)){           
-                $spanIcon.setAttribute('class', 'span-icon span-red px-2');
+                $spanLike.setAttribute('class', 'span-icon span-red px-2');
                 $iconLike.setAttribute('class', 'like-event fas fa-heart');
                 $iconLike.setAttribute('title', 'Click to stop like');
             } else {
-                $spanIcon.setAttribute('class', 'span-icon span-black px-2');
+                $spanLike.setAttribute('class', 'span-icon span-black px-2');
                 $iconLike.setAttribute('class', 'like-event far fa-heart');
                 $iconLike.setAttribute('title', 'Click to like');
             }
 
             if (element.author.followers.includes(currentUser)){
-                $spanFollow.setAttribute('class', 'follow-icon span-orange px-2');
+                $spanFollow.setAttribute('class', 'follow-icon span-orange');
                 $iconFollow.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
                 $spanFollow.setAttribute('title', 'Click to unfollow');
             } else {
-                $spanFollow.setAttribute('class', 'follow-icon span-black px-2');
+                $spanFollow.setAttribute('class', 'follow-icon span-black');
                 $iconFollow.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
                 $spanFollow.setAttribute('title', 'Click to follow');
             }
 
-
-
             $spanFollow.appendChild($iconFollow);
-            $rowAuthor.appendChild($spanFollow);
+            $colAuthorL.appendChild($spanFollow);
             $author.innerHTML = element.author.username;
             
             if (element.author.image) {
@@ -114,26 +112,36 @@ function posts_box(postsbox){
                 $iconUser.setAttribute('height', '50');
                 $authorIcon.appendChild($iconUser);
                 $authorIcon.appendChild($author);
-                $rowAuthor.appendChild($authorIcon);
+                $colAuthorC.appendChild($authorIcon);
             } else {
                 const $iconUser = document.createElement('i');
                 $iconUser.setAttribute('class', 'fas fa-user');
                 $authorIcon.appendChild($iconUser);
                 $authorIcon.appendChild($author);
-                $rowAuthor.appendChild($authorIcon);
+                $colAuthorC.appendChild($authorIcon);
             }
+            //console.log(element.author);
+            //console.log(currentUser);
 
-
-
-            
+            if (element.author.username == currentUser){
+                const $iconEdit = document.createElement('i'),
+                $spanEdit = document.createElement('span');
+                $iconEdit.setAttribute('class', 'fas fa-edit');
+                $iconEdit.setAttribute('title', 'Edit post');
+                $spanEdit.setAttribute('class', 'icon-m span-blue align-content-end');
+                $spanEdit.appendChild($iconEdit);
+                $colAuthorR.appendChild($spanEdit);
+            }
             
             $text.innerHTML = element.text;
             $created.innerHTML = element.created;
             $likes.innerHTML = element.likes.length;
-            $spanIcon.appendChild($iconLike);
-            $likes.appendChild($spanIcon);
+            $spanLike.appendChild($iconLike);
+            $likes.appendChild($spanLike);
+            $rowAuthor.appendChild($colAuthorL);
+            $rowAuthor.appendChild($colAuthorC);
+            $rowAuthor.appendChild($colAuthorR);
             
-
             $listPost.appendChild($rowAuthor);
             $listPost.appendChild($text);
             $likesAndCreated.appendChild($created);
@@ -142,7 +150,6 @@ function posts_box(postsbox){
             $listPost.appendChild($br);
 
             $individualContainer.appendChild($listPost);
-
             
         });
         $containerListPost.appendChild($individualContainer);
@@ -192,12 +199,10 @@ function profiles_box(profilebox){
                     $spanUser.appendChild($iconUser);
                     $iconUser.setAttribute('class', 'fas fa-user');
                 }
-                
-            
+                            
             $followers.innerHTML = element.followers.length;
             $spanFollowers.appendChild($iconFollowers);
-            $followers.appendChild($spanFollowers);
-            
+            $followers.appendChild($spanFollowers);            
             $username.innerHTML = element.username;
             $userAndIcon.appendChild($spanUser);
             $userAndIcon.appendChild($username);
@@ -207,8 +212,7 @@ function profiles_box(profilebox){
             $following.appendChild($spanForFollowing);
             $postsNumber.innerHTML = element.myposts.length;
             $spanPosts.appendChild($iconPosts);
-            $postsNumber.appendChild($spanPosts);
-            
+            $postsNumber.appendChild($spanPosts);            
             $username.setAttribute('class', 'author-event profile-icon pb-3');
             $username.setAttribute('title', 'Click to profile');
             $profiles.setAttribute('class', ' m-3 py-2 px-5 shadow-lg bg-light rounded');
@@ -230,17 +234,14 @@ function profiles_box(profilebox){
                 $following.setAttribute('title', 'Following');
             }
 
-            $spanFollowers.setAttribute('class', 'span-orange icon-m px-1');
-            
+            $spanFollowers.setAttribute('class', 'span-orange icon-m px-1');            
             $spanFollowing.setAttribute('class', 'span-green icon-m px-1');
             $iconPosts.setAttribute('class', 'fas fa-feather-alt px-1');
             $spanPosts.setAttribute('class', 'span-blue icon-m px-1');
             $postsNumber.setAttribute('class', 'text-center');
-            $postsNumber.setAttribute('title', 'Posts');
-            
+            $postsNumber.setAttribute('title', 'Posts');            
             $spanUser.setAttribute('class', 'user-icon span-blue');
             $userAndIcon.setAttribute('class', 'text-center px-3');
-
             $userRow.appendChild($followers);
             $userRow.appendChild($userAndIcon);
             $userRow.appendChild($following);
@@ -259,7 +260,27 @@ function profiles_box(profilebox){
             }
             
         });
-        document.querySelector('#network-container').appendChild($containerAll);
-        
+        document.querySelector('#network-container').appendChild($containerAll);        
     })    
+}
+
+function openForm() {
+    document.getElementById("myForm").style.display = "block";
+    document.querySelector('#send').addEventListener('click', () =>{
+        const body = document.querySelector('#post').value;
+        fetch('http://localhost:8000/new_post', {
+    method: 'POST',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'crossorigin': 'anonymous'
+    },
+    body: JSON.stringify({
+        body
+    })
+    })
+})   
+}
+
+function closeForm() {
+    document.getElementById("myForm").style.display = "none";
 }

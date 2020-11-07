@@ -1,9 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 from .models import User, Posts
@@ -71,6 +73,21 @@ def profile_box(request, profilebox):
         profile['posts'] = posts
         return JsonResponse([profile], safe=False)
 
+@csrf_exempt
+@login_required
+def new_post(request):
+    if request.method == "POST":
+        user = User.objects.get(username=request.user)
+        data = json.loads(request.body)
+        text_data = data['body']
+        print(data)
+        post = Posts(
+            author=user,
+            text=text_data)
+        post.save()    
+        return JsonResponse({"message": "Post sent successfully."}, status=201)
+    else:
+        return JsonResponse({"error": "POST request required."}, status=400)
     
 
 # User Manager ----------------------------------------------------
