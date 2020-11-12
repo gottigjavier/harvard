@@ -115,7 +115,7 @@
   }
   
   /* When the inputs get focus, do something */
-  .form-container .post-text:focus {
+  .form-container .post-text{
     background-color: #ddd;
     outline: none;
   }

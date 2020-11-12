@@ -11,5 +11,6 @@ urlpatterns = [
 
     path("posts_box/<str:postsbox>", views.posts_box, name="posts_box"),
     path("profile_box/<str:profilebox>", views.profile_box, name="profile_box"),
-    path("new_post", views.new_post, name="new_post")
+    path("new_post", views.new_post, name="new_post"),
+    path("edit_post", views.edit_post, name="edit_post")
 ]

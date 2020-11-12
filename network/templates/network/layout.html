@@ -51,27 +51,27 @@
             </div>
           </nav>
           {% if user.is_authenticated %}
-          <button class="open-button" onclick="openForm()">New 
+        <button class="open-button" onclick="new_post()">New 
             <br> post</button>
         
         <div class="form-popup" id="myForm">
-            <form action="#" class="form-container">
-            <div>
-                <h3>New Post</h3>         
-                <textarea id="post" class="post-text" placeholder="" name="post" required></textarea>
-            </div>
-            <div id="form-buttons">
-                
-            <button type="submit" id="send" class="post-btn" title="Send">
-                <i class="fas fa-share"></i>
-            </button>
-                
-            <button type="button" class="post-btn cancel" title="Close" onclick="closeForm()">
-                <i class="fas fa-times"></i>
-            </button>
-            </div>
+            <form action="#" id="my-form" class="form-container">
+                <div>
+                    <h3 id="post-title"></h3>   
+                </div>
+                <div>      
+                    <textarea id="post" class="post-text" placeholder="" name="post" required></textarea>
+                </div>
+                <div id="form-buttons">                
+                    <button type="submit" id="send" class="post-btn" title="Send">
+                        <i class="fas fa-share"></i>
+                    </button>
+                    <button type="button" id="close" class="post-btn cancel" title="Close" onclick="closeForm()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </form>
-          </div>
+        </div>
         {% endif %}
         
         <div class="body">

@@ -88,6 +88,31 @@ def new_post(request):
         return JsonResponse({"message": "Post sent successfully."}, status=201)
     else:
         return JsonResponse({"error": "POST request required."}, status=400)
+
+@csrf_exempt
+@login_required
+def edit_post(request):
+    if request.method == "PUT":
+        current_user = User.objects.get(username=request.user)
+        data = json.loads(request.body)
+        post_text = data['upBody']
+        post_id = data['post_id']
+        post = Posts.objects.get(id=post_id)
+        print('current user', type(current_user.username))
+        print('post.author.username', type(post.author.username))
+        print('post data', data)
+        print('post', post.text)
+        print('post_text', post_text)
+        if current_user.username == post.author.username:
+            print('post', post.text)
+            post.text = post_text
+            post.save()
+            print(post.text)
+            return JsonResponse({"message": "Post updated successfully."}, status=201)
+        else:
+            return JsonResponse({"error": "Invalid user try modify a post."}, status=400)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=400)
     
 
 # User Manager ----------------------------------------------------

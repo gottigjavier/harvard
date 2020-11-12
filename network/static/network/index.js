@@ -13,6 +13,7 @@ document.addEventListener('click', event => {
     const elem = event.target;
     if (elem.className.includes('like-event')){
         window.alert('like-event');
+        console.log(event);
         console.log(elem);
         //like();
     }
@@ -24,8 +25,14 @@ document.addEventListener('click', event => {
     }
     if (elem.className.includes('author-event')){
         const usern = elem.innerHTML;
+        console.log(usern);
         profiles_box(usern); // debe ir a funcion one_profile que llame a post_box
         //window.alert('author-event');
+    }
+    if (elem.className.includes('edit-event')){
+        const body = event.path[4].children[1].innerHTML;
+        const post_id = event.path[4].children[1].id;
+        edit_post(body, post_id);
     }
     
 });
@@ -75,6 +82,7 @@ function posts_box(postsbox){
             $colAuthorC.setAttribute('class', 'col-md-1 mx-0 pl-0 py-1');
             $colAuthorR.setAttribute('class', 'col-md-1 offset-md-9');
             $authorIcon.setAttribute('class', 'profile-icon');
+            $text.setAttribute('id', element.id);
             $text.setAttribute('class', 'row p-2 font-italic my-3');
             $text.setAttribute('wrap', 'hard');
             $likesAndCreated.setAttribute('class', 'row')
@@ -126,7 +134,7 @@ function posts_box(postsbox){
             if (element.author.username == currentUser){
                 const $iconEdit = document.createElement('i'),
                 $spanEdit = document.createElement('span');
-                $iconEdit.setAttribute('class', 'fas fa-edit');
+                $iconEdit.setAttribute('class', 'edit-event fas fa-edit');
                 $iconEdit.setAttribute('title', 'Edit post');
                 $spanEdit.setAttribute('class', 'icon-m span-blue align-content-end');
                 $spanEdit.appendChild($iconEdit);
@@ -254,7 +262,6 @@ function profiles_box(profilebox){
 
             $containerAll.appendChild($containerProfiles);
 
-            console.log(profiles.length)
             if (element.myposts.length > 0 && profiles.length == 1) {
                 posts_box(element.username);
             }
@@ -264,23 +271,61 @@ function profiles_box(profilebox){
     })    
 }
 
-function openForm() {
+function new_post() {
     document.getElementById("myForm").style.display = "block";
-    document.querySelector('#send').addEventListener('click', () =>{
+    document.getElementById("post-title").innerHTML = 'New Post';
+    document.getElementById("post").focus();
+    document.querySelector('#send').addEventListener('click', () =>{        
         const body = document.querySelector('#post').value;
         fetch('http://localhost:8000/new_post', {
-    method: 'POST',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'crossorigin': 'anonymous'
-    },
-    body: JSON.stringify({
-        body
-    })
-    })
-})   
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'crossorigin': 'anonymous'
+            },
+            body: JSON.stringify({
+                body
+            })
+        })
+        .then(response =>  response.json())  
+        .then(result => {
+            const resultKey = Object.keys(result)
+            if (resultKey == 'error') {
+            window.alert(result['error']);
+            }
+        })
+    })   
 }
 
+function edit_post(body='', post_id) {
+    document.getElementById("myForm").style.display = "block";
+    document.getElementById("post-title").innerHTML = 'Edit Post';
+    document.getElementById("post").focus();
+    document.querySelector('#post').value = body;
+    document.querySelector('#send').addEventListener('click', () =>{     
+        const upBody = document.querySelector('#post').value;
+        fetch('http://localhost:8000/edit_post', {
+            method: 'PUT',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'crossorigin': 'anonymous',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({
+                upBody,
+                post_id
+            })
+        })
+        .then(response =>  response.json())  
+        .then(result => {
+            const resultKey = Object.keys(result)
+            if (resultKey == 'error') {
+            window.alert(result['error']);
+            }
+        }) 
+    })  
+}
 function closeForm() {
     document.getElementById("myForm").style.display = "none";
+    location.reload();
 }
