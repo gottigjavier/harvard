@@ -28,7 +28,7 @@ def posts_box(request, postsbox):
             for user in users:
                 if post['author'] == user['username']:
                     post['author'] = user
-            post['all_authors'] = True
+            post['section'] = postsbox
 
     # list of posts by authors i'm following
     elif postsbox == 'follow-posts':
@@ -41,7 +41,7 @@ def posts_box(request, postsbox):
             for user in follow_usr:
                 if post['author'] == user['username']:
                     post['author'] = user
-            post['all_authors'] = True
+            post['section'] = postsbox
 
     # list of posts by a particular author
     else:
@@ -54,7 +54,7 @@ def posts_box(request, postsbox):
         
         for post in posts:
             post['author'] = usr
-            post['all_authors'] = False
+            post['section'] = 'all-profiles'
 
     return JsonResponse( posts ,safe=False)
 
@@ -80,7 +80,6 @@ def new_post(request):
         user = User.objects.get(username=request.user)
         data = json.loads(request.body)
         text_data = data['body']
-        print(data)
         post = Posts(
             author=user,
             text=text_data)
@@ -96,24 +95,39 @@ def edit_post(request):
         current_user = User.objects.get(username=request.user)
         data = json.loads(request.body)
         post_text = data['upBody']
-        post_id = data['post_id']
+        post_id = data['postid']
         post = Posts.objects.get(id=post_id)
-        print('current user', type(current_user.username))
-        print('post.author.username', type(post.author.username))
-        print('post data', data)
-        print('post', post.text)
-        print('post_text', post_text)
         if current_user.username == post.author.username:
-            print('post', post.text)
             post.text = post_text
             post.save()
-            print(post.text)
             return JsonResponse({"message": "Post updated successfully."}, status=201)
         else:
             return JsonResponse({"error": "Invalid user try modify a post."}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method."}, status=400)
-    
+
+
+@csrf_exempt
+@login_required
+def like_post(request):
+    if request.method == "PUT":
+        user_id = request.user.id
+        data = json.loads(request.body)
+        post_id = data['postid']
+        post = Posts.objects.get(id=post_id)
+
+        post_serial = post.serialize()
+        post_likes = post_serial['likes']
+        if user_id not in post_likes:
+            post_likes.append(user_id)
+            post.likes.set(post_likes)
+        else:
+            post_likes.remove(user_id)
+            post.likes.set(post_likes)
+    return JsonResponse({"message": "Like proceced."}, status=201)
+
+
+
 
 # User Manager ----------------------------------------------------
 def login_view(request):
