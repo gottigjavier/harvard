@@ -13,11 +13,11 @@ document.addEventListener('DOMContentLoaded', function(){
 document.addEventListener('click', event => {
     const elem = event.target;
 
-    if (elem.className.includes('like-event')){
+    /*if (elem.className.includes('like-event')){
         const post_id = event.path[4].children[1].id;
         like_post(post_id);
         
-    }
+    }*/
     
     if (elem.className.includes('follow-event')){
         //posts_box('follow-posts');debe ir a funcion seguir o no
@@ -36,7 +36,7 @@ document.addEventListener('click', event => {
         //var profilesCurrentUserID = event.path[7].children[0].children[1].children[0].children[0].children[1].value;
         //console.log(profilesCurrentUserName);
         //console.log(profilesCurrentUserID);
-        console.log(event);
+        //console.log(event);
         profiles_box(usern); // debe ir a funcion one_profile que llame a post_box
         //window.alert('author-event');
     }
@@ -51,7 +51,8 @@ document.addEventListener('click', event => {
 
 });
 
-var all_authors = '';
+var all_authors = '',
+    follwFlag = true;
 
 function posts_box(postsbox){
     fetch(`http://localhost:8000/posts_box/${postsbox}`)
@@ -60,20 +61,20 @@ function posts_box(postsbox){
         const   $clean = document.getElementById('network-container'),
                 $individualContainer = document.createElement('div'),
                 $containerListPost = document.createDocumentFragment();
-
         // get current user
         var currentUser = document.querySelector('#box-user').value;
         var currentUserId = document.querySelector('#box-user-id').value;
-
         
         // Clean page for old content for all posts display
         all_authors = posts[0].section; 
-        console.log(all_authors);
+        
         if (all_authors == 'all-posts' || all_authors == 'follow-posts'){
             $clean.innerHTML = '';
         }
 
+    
         posts.forEach(element => {
+            let likesNum = element.likes.length;
             const $br = document.createElement('br'),
                 $spanLike = document.createElement('span'),
                 $iconLike = document.createElement('i'),
@@ -106,16 +107,21 @@ function posts_box(postsbox){
             $likesAndCreated.setAttribute('class', 'row')
             $created.setAttribute('class', 'col-sm-11 text-right blockquote-footer');
             $likes.setAttribute('class', 'col-sm-1 text-primary');
+            //$iconLike.setAttribute('id', `like-${element.id}`);
             
-            if (currentUser && element.likes.toString().includes(currentUserId)){           
+            if (currentUser && element.likes.toString().includes(currentUserId)){  
                 $spanLike.setAttribute('class', 'span-icon span-red px-2');
                 $iconLike.setAttribute('class', 'like-event fas fa-heart');
-                $iconLike.setAttribute('title', 'Click to stop like');
+                $iconLike.setAttribute('title', 'Click to stop like'); 
+                var likeFlag = true;
                 } else {
                 $spanLike.setAttribute('class', 'span-icon span-black px-2');
                 $iconLike.setAttribute('class', 'like-event far fa-heart');
-                $iconLike.setAttribute('title', 'Click to like');
-            }
+                $iconLike.setAttribute('title', 'Like');
+                var likeFlag = false;
+                }
+
+            
 
             if (element.author.followers.includes(currentUser)){
                 $spanFollow.setAttribute('class', 'follow-icon span-orange');
@@ -146,8 +152,6 @@ function posts_box(postsbox){
                 $authorIcon.appendChild($author);
                 $colAuthorC.appendChild($authorIcon);
             }
-            //console.log(element.author);
-            //console.log(currentUser);
 
             if (element.author.username == currentUser){
                 const $iconEdit = document.createElement('i'),
@@ -161,7 +165,7 @@ function posts_box(postsbox){
             
             $text.innerHTML = element.text;
             $created.innerHTML = element.created;
-            $likes.innerHTML = element.likes.length;
+            $likes.innerHTML = likesNum;
             $spanLike.appendChild($iconLike);
             $likes.appendChild($spanLike);
             $rowAuthor.appendChild($colAuthorL);
@@ -176,6 +180,35 @@ function posts_box(postsbox){
             $listPost.appendChild($br);
 
             $individualContainer.appendChild($listPost);
+
+            
+            $iconLike.onclick= function(){
+                if (currentUser != 'Visitor'){
+                    if (likeFlag){
+                        $spanLike.setAttribute('class', 'span-icon span-black px-2');
+                        $iconLike.setAttribute('class', 'like-event far fa-heart');
+                        $iconLike.setAttribute('title', 'Click to like');
+                        likesNum --;
+                        $likes.innerHTML = likesNum;
+                        $likes.appendChild($spanLike);
+                        like_post(element.id);
+                        likeFlag = false;
+                        return likeFlag;
+                    }
+                    if (!likeFlag){
+                        $spanLike.setAttribute('class', 'span-icon span-red px-2');
+                        $iconLike.setAttribute('class', 'like-event fas fa-heart');
+                        $iconLike.setAttribute('title', 'Click to stop like'); 
+                        likesNum ++;
+                        $likes.innerHTML = likesNum;
+                        $likes.appendChild($spanLike);
+                        like_post(element.id);
+                        likeFlag = true;
+                        return likeFlag;
+                    } 
+                } 
+            };            
+            
             
         });
         $containerListPost.appendChild($individualContainer);
@@ -189,11 +222,9 @@ function profiles_box(profilebox){
     fetch(`http://localhost:8000/profile_box/${profilebox}`)
     .then(response => response.json())
     .then(profiles => {
-
         // get current user
         var currentUser = document.querySelector('#box-user').value;
-        var currentUserId = document.querySelector('#box-user-id').value;
-
+        
         const   $clean = document.getElementById('network-container'),
                 $containerAll = document.createDocumentFragment();
         // Clean page for old content
@@ -221,8 +252,8 @@ function profiles_box(profilebox){
                     const $iconUser = document.createElement('img');
                     $spanUser.appendChild($iconUser);
                     $iconUser.setAttribute('src', `${element.image}`);
-                    $iconUser.setAttribute('width', '100');
-                    $iconUser.setAttribute('height', '100'); 
+                    $iconUser.setAttribute('width', '70');
+                    $iconUser.setAttribute('height', '70'); 
                 } else {
                     const $iconUser = document.createElement('i');
                     $spanUser.appendChild($iconUser);
@@ -299,7 +330,7 @@ var postid = 0;
 function new_post() {
     clearform();
     document.getElementById("myForm").style.display = "block";
-    document.getElementById("post-title").innerHTML = 'New Post';
+    document.getElementById("post-title").innerHTML = `New Post by ${document.getElementById('user-link').innerHTML}`;
     document.getElementById("post").focus();
 
     document.querySelector("#send").removeEventListener("click", sendNewPost);
@@ -329,7 +360,6 @@ function sendNewPost(event) {
         window.alert(result['error']);
         }
         posts_box('all-posts');
-//        location.reload();
     })
     .catch(() => {
         closeForm();
@@ -374,7 +404,6 @@ function sendEditPost(event) {
         window.alert(result['error']);
         }
         posts_box('all-posts');
-//        location.reload();
     })
     .catch(() => {
         closeForm();
@@ -391,22 +420,7 @@ function clearform() {
     document.querySelector("#post").value = "";
 }
 
-// end new and edit form --------------------------------------------
-
-/*document.addEventListener('click', event => {
-    const elem = event.target;
-    if (elem.className.includes('like-event')){
-        const post_id = event.path[4].children[1].id;
-        like_post(post_id, currentUserId);
-        
-    }
-    
-});*/
-
-
-
 function like_post(post_id){
-    postid = post_id;
     // get current user
     var currentUserId = document.querySelector('#box-user-id').value;
     if (currentUserId != 'Visitor') {
@@ -418,18 +432,9 @@ function like_post(post_id){
             'Cache-Control': 'no-cache'
         },
         body: JSON.stringify({
-            postid
+            post_id
         })
     })
-    posts_box('all-posts');
-    //return false;
     }
 }
 
-function like_yes(post_id){
-    postid = post_id;
-}
-
-function like_no(){
-    postid = post_id;
-}

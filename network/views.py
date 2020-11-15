@@ -54,7 +54,7 @@ def posts_box(request, postsbox):
         
         for post in posts:
             post['author'] = usr
-            post['section'] = 'all-profiles'
+            post['section'] = usr['username']
 
     return JsonResponse( posts ,safe=False)
 
@@ -68,7 +68,7 @@ def profile_box(request, profilebox):
         profile = User.objects.get(username=profilebox)
         profile = profile.serialize()
         myposts = profile['myposts']
-        posts = Posts.objects.filter(pk__in=myposts)
+        posts = Posts.objects.filter(author__username=profilebox)
         posts = ([post.serialize() for post in posts])
         profile['posts'] = posts
         return JsonResponse([profile], safe=False)
@@ -80,10 +80,15 @@ def new_post(request):
         user = User.objects.get(username=request.user)
         data = json.loads(request.body)
         text_data = data['body']
-        post = Posts(
+        new_post = Posts(
             author=user,
             text=text_data)
-        post.save()    
+        new_post.save()    
+        last_post = Posts.objects.last()
+        last_post_id = last_post.id
+        serial_user = user.serialize()
+        serial_user['myposts'].append(last_post_id)
+        user.myposts.set(serial_user['myposts'])
         return JsonResponse({"message": "Post sent successfully."}, status=201)
     else:
         return JsonResponse({"error": "POST request required."}, status=400)
@@ -113,7 +118,7 @@ def like_post(request):
     if request.method == "PUT":
         user_id = request.user.id
         data = json.loads(request.body)
-        post_id = data['postid']
+        post_id = data['post_id']
         post = Posts.objects.get(id=post_id)
 
         post_serial = post.serialize()
