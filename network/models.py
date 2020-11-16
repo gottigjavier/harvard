@@ -20,8 +20,8 @@ class User(AbstractUser):
                 "image": self.image.url,
                 "date_joined": self.date_joined.strftime("%b %-d %Y, %-I:%M %p"),
                 "myposts": [myposts.id for myposts in self.myposts.all()],
-                "following": [following.username for following in self.following.all()],
-                "followers": [followers.username for followers in self.followers.all()]
+                "following": [following.id for following in self.following.all()],
+                "followers": [followers.id for followers in self.followers.all()]
             } 
         else:
             return {
@@ -29,8 +29,8 @@ class User(AbstractUser):
                 "username": self.username,
                 "date_joined": self.date_joined.strftime("%b %-d %Y, %-I:%M %p"),
                 "myposts": [myposts.id for myposts in self.myposts.all()],
-                "following": [following.username for following in self.following.all()],
-                "followers": [followers.username for followers in self.followers.all()]
+                "following": [following.id for following in self.following.all()],
+                "followers": [followers.id for followers in self.followers.all()]
             }         
 
 

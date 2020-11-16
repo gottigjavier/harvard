@@ -19,13 +19,13 @@ document.addEventListener('click', event => {
         
     }*/
     
-    if (elem.className.includes('follow-event')){
+    /*if (elem.className.includes('follow-event')){
         //posts_box('follow-posts');debe ir a funcion seguir o no
         window.alert('follow-event');
         console.log(event.path[4].children[0].innerText);
         //console.log(elem);
         //like();
-    }
+    }*/
     if (elem.className.includes('author-event')){
         const usern = elem.innerHTML;
         //var allPostsCurrentUserName = event.path[8].children[0].children[1].children[0].children[0].children[0].value;
@@ -51,168 +51,170 @@ document.addEventListener('click', event => {
 
 });
 
-var all_authors = '',
-    follwFlag = true;
+var all_authors = '';
 
 function posts_box(postsbox){
     fetch(`http://localhost:8000/posts_box/${postsbox}`)
     .then(response => response.json())
     .then(posts => {
-        const   $clean = document.getElementById('network-container'),
+        const   $cleanAll = document.getElementById('network-container'),
                 $individualContainer = document.createElement('div'),
                 $containerListPost = document.createDocumentFragment();
         // get current user
-        var currentUser = document.querySelector('#box-user').value;
-        var currentUserId = document.querySelector('#box-user-id').value;
+        let currentUser = document.querySelector('#box-user').value;
+        let currentUserId = document.querySelector('#box-user-id').value;
         
-        // Clean page for old content for all posts display
-        all_authors = posts[0].section; 
-        
-        if (all_authors == 'all-posts' || all_authors == 'follow-posts'){
-            $clean.innerHTML = '';
-        }
-
-    
-        posts.forEach(element => {
-            let likesNum = element.likes.length;
-            const $br = document.createElement('br'),
-                $spanLike = document.createElement('span'),
-                $iconLike = document.createElement('i'),
-                $spanFollow = document.createElement('span'),
-                $iconFollow = document.createElement('i'),
-                $listPost = document.createElement('div'),
-                $likes = document.createElement('div'),
-                $rowAuthor = document.createElement('div'),
-                $colAuthorL = document.createElement('div'),
-                $colAuthorC = document.createElement('div'),
-                $colAuthorR = document.createElement('div'),
-                $authorIcon = document.createElement('div'),
-                $author = document.createElement('div'),
-                $created = document.createElement('div'),
-                $likesAndCreated = document.createElement('div'),
-                $text = document.createElement('pre');
-
-            $listPost.setAttribute('class', 'post-style m-3 py-2 px-5 shadow-lg bg-light rounded');
-            $individualContainer.setAttribute('class', 'container');
-            $author.setAttribute('class', 'author-event');
-            $author.setAttribute('title', 'Click to profile');
-            $rowAuthor.setAttribute('class', 'row');
-            $colAuthorL.setAttribute('class', 'col-md-1 m-0 pr-0 py-1');
-            $colAuthorC.setAttribute('class', 'col-md-1 mx-0 pl-0 py-1');
-            $colAuthorR.setAttribute('class', 'col-md-1 offset-md-9');
-            $authorIcon.setAttribute('class', 'profile-icon');
-            $text.setAttribute('id', element.id);
-            $text.setAttribute('class', 'row p-2 font-italic my-3');
-            $text.setAttribute('wrap', 'hard');
-            $likesAndCreated.setAttribute('class', 'row')
-            $created.setAttribute('class', 'col-sm-11 text-right blockquote-footer');
-            $likes.setAttribute('class', 'col-sm-1 text-primary');
-            //$iconLike.setAttribute('id', `like-${element.id}`);
+        if (posts.id != 0){
+            // Clean page for old content for all posts display
+            all_authors = posts[0].section; 
             
-            if (currentUser && element.likes.toString().includes(currentUserId)){  
-                $spanLike.setAttribute('class', 'span-icon span-red px-2');
-                $iconLike.setAttribute('class', 'like-event fas fa-heart');
-                $iconLike.setAttribute('title', 'Click to stop like'); 
-                var likeFlag = true;
-                } else {
-                $spanLike.setAttribute('class', 'span-icon span-black px-2');
-                $iconLike.setAttribute('class', 'like-event far fa-heart');
-                $iconLike.setAttribute('title', 'Like');
-                var likeFlag = false;
+            if (all_authors == 'all-posts' || all_authors == 'follow-posts'){
+                $cleanAll.innerHTML = '';
+            }
+        
+            posts.forEach(element => {
+                let likesNum = element.likes.length;
+                const $br = document.createElement('br'),
+                    $spanLike = document.createElement('span'),
+                    $iconLike = document.createElement('i'),
+                    $spanFollow = document.createElement('span'),
+                    $iconFollow = document.createElement('i'),
+                    $listPost = document.createElement('div'),
+                    $likes = document.createElement('div'),
+                    $rowAuthor = document.createElement('div'),
+                    $colAuthorL = document.createElement('div'),
+                    $colAuthorC = document.createElement('div'),
+                    $colAuthorR = document.createElement('div'),
+                    $authorIcon = document.createElement('div'),
+                    $author = document.createElement('div'),
+                    $created = document.createElement('div'),
+                    $likesAndCreated = document.createElement('div'),
+                    $text = document.createElement('pre');
+
+                $listPost.setAttribute('class', 'post-style m-3 py-2 px-5 shadow-lg bg-light rounded');
+                $individualContainer.setAttribute('class', 'container');
+                $author.setAttribute('class', 'author-event');
+                $author.setAttribute('title', 'Click to profile');
+                $rowAuthor.setAttribute('class', 'row');
+                $colAuthorL.setAttribute('class', 'col-md-1 m-0 pr-0 py-1');
+                $colAuthorC.setAttribute('class', 'col-md-1 mx-0 pl-0 py-1');
+                $colAuthorR.setAttribute('class', 'col-md-1 offset-md-9');
+                $authorIcon.setAttribute('class', 'profile-icon');
+                $text.setAttribute('id', element.id);
+                $text.setAttribute('class', 'row py-2 px-4 mx-2 font-italic my-3');
+                $text.setAttribute('wrap', 'hard');
+                $likesAndCreated.setAttribute('class', 'row')
+                $created.setAttribute('class', 'col-sm-11 text-right blockquote-footer');
+                $likes.setAttribute('class', 'col-sm-1 text-primary');
+                //$iconLike.setAttribute('id', `like-${element.id}`);
+                
+                if (currentUser && element.likes.toString().includes(currentUserId)){  
+                    $spanLike.setAttribute('class', 'span-icon span-red px-2');
+                    $iconLike.setAttribute('class', 'like-event fas fa-heart');
+                    $iconLike.setAttribute('title', 'Click to stop like'); 
+                    var likeFlag = true;
+                    } else {
+                    $spanLike.setAttribute('class', 'span-icon span-black px-2');
+                    $iconLike.setAttribute('class', 'like-event far fa-heart');
+                    $iconLike.setAttribute('title', 'Like');
+                    var likeFlag = false;
+                    }
+
+                if (currentUser != 'Visitor'){
+                    if (element.author.followers.toString().includes(currentUserId)){
+                        $spanFollow.setAttribute('class', 'follow-icon span-orange');
+                        $iconFollow.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
+                        $spanFollow.setAttribute('title', 'Click to unfollow');
+                        //var followFlag = true;
+                    } else {
+                        $spanFollow.setAttribute('class', 'follow-icon span-black');
+                        $iconFollow.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
+                        $spanFollow.setAttribute('title', 'Click to follow');
+                        //var followFlag = false;
+                    }
                 }
 
-            
+                $spanFollow.appendChild($iconFollow);
+                $colAuthorL.appendChild($spanFollow);
+                $author.innerHTML = element.author.username;
+                
+                if (element.author.image) {
+                    const $iconUser = document.createElement('img');
+                    $iconUser.setAttribute('src', `${element.author.image}`);
+                    $iconUser.setAttribute('width', '50');
+                    $iconUser.setAttribute('height', '50');
+                    $authorIcon.appendChild($iconUser);
+                    $authorIcon.appendChild($author);
+                    $colAuthorC.appendChild($authorIcon);
+                } else {
+                    const $iconUser = document.createElement('i');
+                    $iconUser.setAttribute('class', 'fas fa-user');
+                    $authorIcon.appendChild($iconUser);
+                    $authorIcon.appendChild($author);
+                    $colAuthorC.appendChild($authorIcon);
+                }
 
-            if (element.author.followers.includes(currentUser)){
-                $spanFollow.setAttribute('class', 'follow-icon span-orange');
-                $iconFollow.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
-                $spanFollow.setAttribute('title', 'Click to unfollow');
-            } else {
-                $spanFollow.setAttribute('class', 'follow-icon span-black');
-                $iconFollow.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
-                $spanFollow.setAttribute('title', 'Click to follow');
-            }
+                if (element.author.username == currentUser){
+                    const $iconEdit = document.createElement('i'),
+                    $spanEdit = document.createElement('span');
+                    $iconEdit.setAttribute('class', 'edit-event fas fa-edit');
+                    $iconEdit.setAttribute('title', 'Edit post');
+                    $spanEdit.setAttribute('class', 'icon-m span-blue align-content-end');
+                    $spanEdit.appendChild($iconEdit);
+                    $colAuthorR.appendChild($spanEdit);
+                }
+                
+                $text.innerHTML = element.text;
+                $created.innerHTML = element.created;
+                $likes.innerHTML = likesNum;
+                $spanLike.appendChild($iconLike);
+                $likes.appendChild($spanLike);
+                $rowAuthor.appendChild($colAuthorL);
+                $rowAuthor.appendChild($colAuthorC);
+                $rowAuthor.appendChild($colAuthorR);
+                
+                $listPost.appendChild($rowAuthor);
+                $listPost.appendChild($text);
+                $likesAndCreated.appendChild($created);
+                $likesAndCreated.appendChild($likes);
+                $listPost.appendChild($likesAndCreated);
+                $listPost.appendChild($br);
 
-            $spanFollow.appendChild($iconFollow);
-            $colAuthorL.appendChild($spanFollow);
-            $author.innerHTML = element.author.username;
-            
-            if (element.author.image) {
-                const $iconUser = document.createElement('img');
-                $iconUser.setAttribute('src', `${element.author.image}`);
-                $iconUser.setAttribute('width', '50');
-                $iconUser.setAttribute('height', '50');
-                $authorIcon.appendChild($iconUser);
-                $authorIcon.appendChild($author);
-                $colAuthorC.appendChild($authorIcon);
-            } else {
-                const $iconUser = document.createElement('i');
-                $iconUser.setAttribute('class', 'fas fa-user');
-                $authorIcon.appendChild($iconUser);
-                $authorIcon.appendChild($author);
-                $colAuthorC.appendChild($authorIcon);
-            }
+                $individualContainer.appendChild($listPost);
 
-            if (element.author.username == currentUser){
-                const $iconEdit = document.createElement('i'),
-                $spanEdit = document.createElement('span');
-                $iconEdit.setAttribute('class', 'edit-event fas fa-edit');
-                $iconEdit.setAttribute('title', 'Edit post');
-                $spanEdit.setAttribute('class', 'icon-m span-blue align-content-end');
-                $spanEdit.appendChild($iconEdit);
-                $colAuthorR.appendChild($spanEdit);
-            }
-            
-            $text.innerHTML = element.text;
-            $created.innerHTML = element.created;
-            $likes.innerHTML = likesNum;
-            $spanLike.appendChild($iconLike);
-            $likes.appendChild($spanLike);
-            $rowAuthor.appendChild($colAuthorL);
-            $rowAuthor.appendChild($colAuthorC);
-            $rowAuthor.appendChild($colAuthorR);
-            
-            $listPost.appendChild($rowAuthor);
-            $listPost.appendChild($text);
-            $likesAndCreated.appendChild($created);
-            $likesAndCreated.appendChild($likes);
-            $listPost.appendChild($likesAndCreated);
-            $listPost.appendChild($br);
-
-            $individualContainer.appendChild($listPost);
-
-            
-            $iconLike.onclick= function(){
-                if (currentUser != 'Visitor'){
-                    if (likeFlag){
-                        $spanLike.setAttribute('class', 'span-icon span-black px-2');
-                        $iconLike.setAttribute('class', 'like-event far fa-heart');
-                        $iconLike.setAttribute('title', 'Click to like');
-                        likesNum --;
-                        $likes.innerHTML = likesNum;
-                        $likes.appendChild($spanLike);
-                        like_post(element.id);
-                        likeFlag = false;
-                        return likeFlag;
-                    }
-                    if (!likeFlag){
-                        $spanLike.setAttribute('class', 'span-icon span-red px-2');
-                        $iconLike.setAttribute('class', 'like-event fas fa-heart');
-                        $iconLike.setAttribute('title', 'Click to stop like'); 
-                        likesNum ++;
-                        $likes.innerHTML = likesNum;
-                        $likes.appendChild($spanLike);
-                        like_post(element.id);
-                        likeFlag = true;
-                        return likeFlag;
+                
+                $iconLike.onclick= function(){
+                    if (currentUser != 'Visitor'){
+                        if (likeFlag){
+                            $spanLike.setAttribute('class', 'span-icon span-black px-2');
+                            $iconLike.setAttribute('class', 'like-event far fa-heart');
+                            $iconLike.setAttribute('title', 'Click to like');
+                            likesNum --;
+                            $likes.innerHTML = likesNum;
+                            $likes.appendChild($spanLike);
+                            like_post(element.id);
+                            likeFlag = false;
+                            return likeFlag;
+                        }
+                        if (!likeFlag){
+                            $spanLike.setAttribute('class', 'span-icon span-red px-2');
+                            $iconLike.setAttribute('class', 'like-event fas fa-heart');
+                            $iconLike.setAttribute('title', 'Click to stop like'); 
+                            likesNum ++;
+                            $likes.innerHTML = likesNum;
+                            $likes.appendChild($spanLike);
+                            like_post(element.id);
+                            likeFlag = true;
+                            return likeFlag;
+                        } 
                     } 
-                } 
-            };            
-            
-            
-        });
-        $containerListPost.appendChild($individualContainer);
-        document.querySelector('#network-container').appendChild($containerListPost);        
+                };                        
+            });
+            $containerListPost.appendChild($individualContainer);
+            document.querySelector('#network-container').appendChild($containerListPost); 
+        } else {
+            window.alert('Following has no posts to display.');
+        }       
     })    
 }
 
@@ -223,12 +225,14 @@ function profiles_box(profilebox){
     .then(response => response.json())
     .then(profiles => {
         // get current user
-        var currentUser = document.querySelector('#box-user').value;
+        let currentUser = document.querySelector('#box-user').value;
+        let currentUserId = document.querySelector('#box-user-id').value;
         
-        const   $clean = document.getElementById('network-container'),
+        
+        const   $cleanAll = document.getElementById('network-container'),
                 $containerAll = document.createDocumentFragment();
         // Clean page for old content
-        $clean.innerHTML = '';
+        $cleanAll.innerHTML = '';
         profiles.forEach(element => {
             const $profiles = document.createElement('div'),
                 $containerProfiles = document.createElement('div'),
@@ -278,15 +282,17 @@ function profiles_box(profilebox){
             $profiles.setAttribute('class', ' m-3 py-2 px-5 shadow-lg bg-light rounded');
             $userRow.setAttribute('class', 'user-row');
 
-            if (element.followers.includes(currentUser)){
+            if (element.followers.toString().includes(currentUserId)){
                 $iconFollowers.setAttribute('class', 'fas fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers (including you)');
+                var followFlag = true;
             } else {
                 $iconFollowers.setAttribute('class', 'far fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers');
+                var followFlag = false;
             }
 
-            if (element.following.includes(currentUser)){
+            if (element.following.toString().includes(currentUserId)){
                 $iconFollowing.setAttribute('class', 'fas fa-arrow-alt-circle-right');
                 $following.setAttribute('title', 'Following (including you)');
             } else {
@@ -314,6 +320,43 @@ function profiles_box(profilebox){
 
             $containerAll.appendChild($containerProfiles);
 
+            $iconFollowers.onclick= function(){
+                if (currentUser != 'Visitor'){
+                    if (followFlag){
+                        $spanFollowers.setAttribute('class', 'follow-icon span-orange');
+                        $iconFollowers.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
+                        $spanFollowers.setAttribute('title', 'Click to follow');
+                        element.followers.length --;
+                        $followers.innerHTML = element.followers.length;
+                        $spanFollowers.appendChild($iconFollowers);
+                        $followers.appendChild($spanFollowers);
+                        follow_author(element.id);
+                        console.log(element.id);
+                        followFlag = false;
+                        if (profiles.length == 1){
+                            window.alert('Stop follow');
+                            profiles_box(element.username);};
+                        return followFlag;
+                    }
+                    if (!followFlag){
+                        $spanFollowers.setAttribute('class', 'follow-icon span-orange');
+                        $iconFollowers.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
+                        $spanFollowers.setAttribute('title', 'Click to unfollow'); 
+                        element.followers.length ++;
+                        $followers.innerHTML = element.followers.length;
+                        $spanFollowers.appendChild($iconFollowers);
+                        $followers.appendChild($spanFollowers);
+                        follow_author(element.id);
+                        followFlag = true;
+                        if (profiles.length == 1){
+                            window.alert('Start follow');
+                            profiles_box(element.username);};
+                        return followFlag;
+                    } 
+                } 
+            };            
+            
+
             if (element.myposts.length > 0 && profiles.length == 1) {
                 posts_box(element.username);
             }
@@ -332,6 +375,11 @@ function new_post() {
     document.getElementById("myForm").style.display = "block";
     document.getElementById("post-title").innerHTML = `New Post by ${document.getElementById('user-link').innerHTML}`;
     document.getElementById("post").focus();
+    if (document.querySelector('#post').value == ''){
+        document.querySelector("#send").disabled = true;
+    } else {
+        document.querySelector("#send").disabled = false;
+    }
 
     document.querySelector("#send").removeEventListener("click", sendNewPost);
     document.querySelector("#send").removeEventListener("click", sendEditPost);
@@ -433,6 +481,24 @@ function like_post(post_id){
         },
         body: JSON.stringify({
             post_id
+        })
+    })
+    }
+}
+
+function follow_author(author_id){
+    // get current user
+    var currentUserId = document.querySelector('#box-user-id').value;
+    if (currentUserId != 'Visitor') {
+    fetch('http://localhost:8000/follow_author', {
+        method: 'PUT',
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'crossorigin': 'anonymous',
+            'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify({
+            author_id
         })
     })
     }

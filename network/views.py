@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import datetime
 
 from .models import User, Posts
 
@@ -32,16 +33,21 @@ def posts_box(request, postsbox):
 
     # list of posts by authors i'm following
     elif postsbox == 'follow-posts':
-        follow_posts = Posts.objects.filter(author__followers=request.user)
-        follow_posts = follow_posts.order_by("-created").all()
-        posts = ([follow_post.serialize() for follow_post in follow_posts])
-        follow_users = User.objects.filter(followers=request.user)
-        follow_usr = ([follow_user.serialize() for follow_user in follow_users])
-        for post in posts:
-            for user in follow_usr:
-                if post['author'] == user['username']:
-                    post['author'] = user
-            post['section'] = postsbox
+        if Posts.objects.filter(author__followers=request.user).exists():
+            follow_posts = Posts.objects.filter(author__followers=request.user)
+            follow_posts = follow_posts.order_by("-created").all()
+            posts = ([follow_post.serialize() for follow_post in follow_posts])
+            follow_users = User.objects.filter(followers=request.user)
+            follow_usr = ([follow_user.serialize() for follow_user in follow_users])
+            for post in posts:
+                for user in follow_usr:
+                    if post['author'] == user['username']:
+                        post['author'] = user
+                post['section'] = postsbox
+        else:
+            post = Posts(id=0, text='', created=datetime.datetime.now(), author=request.user)
+            posts = post.serialize()
+            print(posts)
 
     # list of posts by a particular author
     else:
@@ -131,6 +137,27 @@ def like_post(request):
             post.likes.set(post_likes)
     return JsonResponse({"message": "Like proceced."}, status=201)
 
+
+@csrf_exempt
+@login_required
+def follow_author(request):
+    if request.method == "PUT":
+        user_id = request.user.id
+        data = json.loads(request.body)
+        author_id = data['author_id']
+        author_follow = User.objects.get(id=author_id)
+
+        author_serial = author_follow.serialize()
+        author_serial_followers = author_serial['followers']
+        print(author_serial_followers)
+        if user_id not in author_serial_followers:
+            author_serial_followers.append(user_id)
+            author_follow.followers.set(author_serial_followers)
+        else:
+            author_serial_followers.remove(user_id)
+            author_follow.followers.set(author_serial_followers)
+        print(author_serial_followers)
+    return JsonResponse({"message": "Follow proceced."}, status=201)
 
 
 
