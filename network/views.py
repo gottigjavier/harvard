@@ -120,6 +120,21 @@ def edit_post(request):
 
 @csrf_exempt
 @login_required
+def delete_post(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        data_id = data['post_id']
+        post = Posts.objects.get(pk=data_id)
+        post.delete()
+        return JsonResponse({"message": "Post deleted successfully."}, status=201)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
+
+
+@csrf_exempt
+@login_required
 def like_post(request):
     if request.method == "PUT":
         user_id = request.user.id

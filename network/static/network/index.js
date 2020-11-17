@@ -12,20 +12,6 @@ document.addEventListener('DOMContentLoaded', function(){
 // Events listener to follow, like and profile display -----------------
 document.addEventListener('click', event => {
     const elem = event.target;
-
-    /*if (elem.className.includes('like-event')){
-        const post_id = event.path[4].children[1].id;
-        like_post(post_id);
-        
-    }*/
-    
-    /*if (elem.className.includes('follow-event')){
-        //posts_box('follow-posts');debe ir a funcion seguir o no
-        window.alert('follow-event');
-        console.log(event.path[4].children[0].innerText);
-        //console.log(elem);
-        //like();
-    }*/
     if (elem.className.includes('author-event')){
         const usern = elem.innerHTML;
         //var allPostsCurrentUserName = event.path[8].children[0].children[1].children[0].children[0].children[0].value;
@@ -41,9 +27,21 @@ document.addEventListener('click', event => {
         //window.alert('author-event');
     }
     if (elem.className.includes('edit-event')){
-        const body = event.path[4].children[1].innerHTML;
-        const post_id = event.path[4].children[1].id;
+        const $postObject = event.path[4].children[1];
+        const body = $postObject.innerHTML;
+        const post_id = $postObject.id;
+        $postObject.style.color = 'green';
         edit_post(body, post_id);
+    }
+
+    if (elem.className.includes('delete-event')){
+        const post_id = event.path[4].children[1].id,
+            post_body = event.path[4];
+            post_body.style.animationPlayState = 'running';                    
+            post_body.addEventListener('animationend', function () {
+                post_body.remove();
+                });
+                delete_post(post_id, post_body);
     }
     
 });
@@ -57,7 +55,8 @@ function posts_box(postsbox){
     fetch(`http://localhost:8000/posts_box/${postsbox}`)
     .then(response => response.json())
     .then(posts => {
-        const   $cleanAll = document.getElementById('network-container'),
+        const   $cleanProfiles = document.getElementById('profiles-container'),
+                $cleanPosts = document.getElementById('posts-container'),
                 $individualContainer = document.createElement('div'),
                 $containerListPost = document.createDocumentFragment();
         // get current user
@@ -69,7 +68,13 @@ function posts_box(postsbox){
             all_authors = posts[0].section; 
             
             if (all_authors == 'all-posts' || all_authors == 'follow-posts'){
-                $cleanAll.innerHTML = '';
+                $cleanProfiles.innerHTML = '';
+                $cleanPosts.innerHTML = '';
+                $cleanProfiles.style.display = 'none';
+                $cleanPosts.style.display = 'block';
+            } else {
+                $cleanProfiles.style.display = 'block';
+                $cleanPosts.innerHTML = '';
             }
         
             posts.forEach(element => {
@@ -92,16 +97,16 @@ function posts_box(postsbox){
                     $text = document.createElement('pre');
 
                 $listPost.setAttribute('class', 'post-style m-3 py-2 px-5 shadow-lg bg-light rounded');
-                $individualContainer.setAttribute('class', 'container');
-                $author.setAttribute('class', 'author-event');
+                $individualContainer.setAttribute('class', 'container my-container');
+                $author.setAttribute('class', 'author-event profile-name pt-2');
                 $author.setAttribute('title', 'Click to profile');
                 $rowAuthor.setAttribute('class', 'row');
                 $colAuthorL.setAttribute('class', 'col-md-1 m-0 pr-0 py-1');
                 $colAuthorC.setAttribute('class', 'col-md-1 mx-0 pl-0 py-1');
-                $colAuthorR.setAttribute('class', 'col-md-1 offset-md-9');
+                $colAuthorR.setAttribute('class', 'col-md-2 offset-md-8 text-right');
                 $authorIcon.setAttribute('class', 'profile-icon');
                 $text.setAttribute('id', element.id);
-                $text.setAttribute('class', 'row py-2 px-4 mx-2 font-italic my-3');
+                $text.setAttribute('class', 'row py-2 pl-4 pr-1 mx-2 font-italic my-3 text-post');
                 $text.setAttribute('wrap', 'hard');
                 $likesAndCreated.setAttribute('class', 'row')
                 $created.setAttribute('class', 'col-sm-11 text-right blockquote-footer');
@@ -122,15 +127,13 @@ function posts_box(postsbox){
 
                 if (currentUser != 'Visitor'){
                     if (element.author.followers.toString().includes(currentUserId)){
-                        $spanFollow.setAttribute('class', 'follow-icon span-orange');
+                        $spanFollow.setAttribute('class', 'span-orange icon-m');
                         $iconFollow.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
-                        $spanFollow.setAttribute('title', 'Click to unfollow');
-                        //var followFlag = true;
+                        $spanFollow.setAttribute('title', 'Following');
                     } else {
-                        $spanFollow.setAttribute('class', 'follow-icon span-black');
+                        $spanFollow.setAttribute('class', 'span-black icon-m');
                         $iconFollow.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
-                        $spanFollow.setAttribute('title', 'Click to follow');
-                        //var followFlag = false;
+                        $spanFollow.setAttribute('title', 'Not Follwoing');
                     }
                 }
 
@@ -159,9 +162,17 @@ function posts_box(postsbox){
                     $spanEdit = document.createElement('span');
                     $iconEdit.setAttribute('class', 'edit-event fas fa-edit');
                     $iconEdit.setAttribute('title', 'Edit post');
-                    $spanEdit.setAttribute('class', 'icon-m span-blue align-content-end');
+                    $spanEdit.setAttribute('class', 'icon-m px-2 mx-2 align-content-end');
                     $spanEdit.appendChild($iconEdit);
                     $colAuthorR.appendChild($spanEdit);
+
+                    const $iconDelete = document.createElement('i'),
+                    $spanDelete = document.createElement('span');
+                    $iconDelete.setAttribute('class', 'delete-event fas fa-times');
+                    $iconDelete.setAttribute('title', 'Delete post');
+                    $spanDelete.setAttribute('class', 'icon-m span-black align-content-end');
+                    $spanDelete.appendChild($iconDelete);
+                    $colAuthorR.appendChild($spanDelete);
                 }
                 
                 $text.innerHTML = element.text;
@@ -211,7 +222,7 @@ function posts_box(postsbox){
                 };                        
             });
             $containerListPost.appendChild($individualContainer);
-            document.querySelector('#network-container').appendChild($containerListPost); 
+            document.querySelector('#posts-container').appendChild($containerListPost); 
         } else {
             window.alert('Following has no posts to display.');
         }       
@@ -229,10 +240,14 @@ function profiles_box(profilebox){
         let currentUserId = document.querySelector('#box-user-id').value;
         
         
-        const   $cleanAll = document.getElementById('network-container'),
+        const   $cleanProfiles = document.getElementById('profiles-container'),
+                $cleanPosts = document.getElementById('posts-container'),
                 $containerAll = document.createDocumentFragment();
         // Clean page for old content
-        $cleanAll.innerHTML = '';
+        $cleanProfiles.innerHTML = '';
+        $cleanPosts.innerHTML = '';
+        $cleanProfiles.style.display = 'block';
+        $cleanPosts.style.display = 'none';
         profiles.forEach(element => {
             const $profiles = document.createElement('div'),
                 $containerProfiles = document.createElement('div'),
@@ -277,34 +292,36 @@ function profiles_box(profilebox){
             $postsNumber.innerHTML = element.myposts.length;
             $spanPosts.appendChild($iconPosts);
             $postsNumber.appendChild($spanPosts);            
-            $username.setAttribute('class', 'author-event profile-icon pb-3');
+            $username.setAttribute('class', 'author-event profile-name pb-3');
             $username.setAttribute('title', 'Click to profile');
-            $profiles.setAttribute('class', ' m-3 py-2 px-5 shadow-lg bg-light rounded');
+            $profiles.setAttribute('class', 'profile-icon m-3 py-2 px-5 shadow-lg bg-light rounded');
             $userRow.setAttribute('class', 'user-row');
+            $followers.setAttribute('class', 'span-black');
+            $following.setAttribute('class', 'span-black');
 
             if (element.followers.toString().includes(currentUserId)){
-                $iconFollowers.setAttribute('class', 'fas fa-arrow-alt-circle-right');
+                $iconFollowers.setAttribute('class', 'follow-icon span-orange fas fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers (including you)');
                 var followFlag = true;
             } else {
-                $iconFollowers.setAttribute('class', 'far fa-arrow-alt-circle-right');
+                $iconFollowers.setAttribute('class', 'follow-icon span-orange far fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers');
                 var followFlag = false;
             }
 
             if (element.following.toString().includes(currentUserId)){
-                $iconFollowing.setAttribute('class', 'fas fa-arrow-alt-circle-right');
+                $iconFollowing.setAttribute('class', 'span-green fas fa-arrow-alt-circle-right');
                 $following.setAttribute('title', 'Following (including you)');
             } else {
-                $iconFollowing.setAttribute('class', 'far fa-arrow-alt-circle-right');
+                $iconFollowing.setAttribute('class', 'span-green far fa-arrow-alt-circle-right');
                 $following.setAttribute('title', 'Following');
             }
 
-            $spanFollowers.setAttribute('class', 'span-orange icon-m px-1');            
-            $spanFollowing.setAttribute('class', 'span-green icon-m px-1');
+            $spanFollowers.setAttribute('class', 'icon-m px-1');            
+            $spanFollowing.setAttribute('class', 'icon-m px-1');
             $iconPosts.setAttribute('class', 'fas fa-feather-alt px-1');
             $spanPosts.setAttribute('class', 'span-blue icon-m px-1');
-            $postsNumber.setAttribute('class', 'text-center');
+            $postsNumber.setAttribute('class', 'span-black text-center');
             $postsNumber.setAttribute('title', 'Posts');            
             $spanUser.setAttribute('class', 'user-icon span-blue');
             $userAndIcon.setAttribute('class', 'text-center px-3');
@@ -320,49 +337,58 @@ function profiles_box(profilebox){
 
             $containerAll.appendChild($containerProfiles);
 
+            console.log('currentuser',currentUserId);
+                    console.log('elemet.id',element.id);
+                    
+
             $iconFollowers.onclick= function(){
                 if (currentUser != 'Visitor'){
-                    if (followFlag){
-                        $spanFollowers.setAttribute('class', 'follow-icon span-orange');
-                        $iconFollowers.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
-                        $spanFollowers.setAttribute('title', 'Click to follow');
-                        element.followers.length --;
-                        $followers.innerHTML = element.followers.length;
-                        $spanFollowers.appendChild($iconFollowers);
-                        $followers.appendChild($spanFollowers);
-                        follow_author(element.id);
-                        console.log(element.id);
-                        followFlag = false;
-                        if (profiles.length == 1){
-                            window.alert('Stop follow');
-                            profiles_box(element.username);};
-                        return followFlag;
-                    }
-                    if (!followFlag){
-                        $spanFollowers.setAttribute('class', 'follow-icon span-orange');
-                        $iconFollowers.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
-                        $spanFollowers.setAttribute('title', 'Click to unfollow'); 
-                        element.followers.length ++;
-                        $followers.innerHTML = element.followers.length;
-                        $spanFollowers.appendChild($iconFollowers);
-                        $followers.appendChild($spanFollowers);
-                        follow_author(element.id);
-                        followFlag = true;
-                        if (profiles.length == 1){
-                            window.alert('Start follow');
-                            profiles_box(element.username);};
-                        return followFlag;
+                    if (currentUserId != element.id){ 
+                        if (followFlag){
+                            $spanFollowers.setAttribute('class', 'follow-icon span-orange icon-m px-1');
+                            $iconFollowers.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
+                            $spanFollowers.setAttribute('title', 'Click to return to follow');
+                            element.followers.length --;
+                            $followers.innerHTML = element.followers.length;
+                            $spanFollowers.appendChild($iconFollowers);
+                            $followers.appendChild($spanFollowers);
+                            follow_author(element.id);
+                            console.log(element.id);
+                            followFlag = false;
+                            if (profiles.length == 1){
+                                //window.alert('Stop follow');
+                                posts_box(element.username);};
+                            return followFlag;
+                        }
+                        if (!followFlag){
+                            $spanFollowers.setAttribute('class', 'follow-icon span-orange icon-m px-1');
+                            $iconFollowers.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
+                            $spanFollowers.setAttribute('title', 'Click to return to unfollow'); 
+                            element.followers.length ++;
+                            $followers.innerHTML = element.followers.length;
+                            $spanFollowers.appendChild($iconFollowers);
+                            $followers.appendChild($spanFollowers);
+                            follow_author(element.id);
+                            followFlag = true;
+                            if (profiles.length == 1){
+                                //window.alert('Start follow');
+                                posts_box(element.username);};
+                            return followFlag;
+                        }
+                    } else {
+                        window.alert("You can't follow yourself. ")
                     } 
                 } 
             };            
             
 
             if (element.myposts.length > 0 && profiles.length == 1) {
+                $cleanPosts.style.display = 'block';
                 posts_box(element.username);
             }
             
         });
-        document.querySelector('#network-container').appendChild($containerAll);        
+        document.querySelector('#profiles-container').appendChild($containerAll);        
     })    
 }
 
@@ -375,11 +401,13 @@ function new_post() {
     document.getElementById("myForm").style.display = "block";
     document.getElementById("post-title").innerHTML = `New Post by ${document.getElementById('user-link').innerHTML}`;
     document.getElementById("post").focus();
-    if (document.querySelector('#post').value == ''){
-        document.querySelector("#send").disabled = true;
-    } else {
-        document.querySelector("#send").disabled = false;
+    /*document.getElementById("send").disabled = false;
+    if (document.getElementById('post').value === ''){
+        document.getElementById("send").disabled = true;
     }
+    if (document.getElementById('post').value != '') {
+        document.getElementById("send").disabled = false;
+    }*/
 
     document.querySelector("#send").removeEventListener("click", sendNewPost);
     document.querySelector("#send").removeEventListener("click", sendEditPost);
@@ -432,6 +460,7 @@ function edit_post(body='', post_id) {
 function sendEditPost(event) {
     event.preventDefault();
     const upBody = document.querySelector('#post').value;
+    document.getElementById(`${postid}`).innerHTML = upBody;
     fetch('http://localhost:8000/edit_post', {
         method: 'PUT',
         headers: {
@@ -451,7 +480,6 @@ function sendEditPost(event) {
         if (resultKey == 'error') {
         window.alert(result['error']);
         }
-        posts_box('all-posts');
     })
     .catch(() => {
         closeForm();
@@ -459,6 +487,9 @@ function sendEditPost(event) {
 }
 
 function closeForm() {
+    if (postid != 0) {
+        document.getElementById(`${postid}`).style.color = 'black';
+    }
     postid = 0;
     document.getElementById("myForm").style.display = "none";
     clearform();
@@ -467,6 +498,27 @@ function closeForm() {
 function clearform() {
     document.querySelector("#post").value = "";
 }
+
+function delete_post(post_id){
+    // get current user
+    var currentUserId = document.querySelector('#box-user-id').value;
+    if (currentUserId != 'Visitor') {
+        fetch('http://localhost:8000/delete_post', {
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'crossorigin': 'anonymous',
+                'Cache-Control': 'no-cache'
+            },
+            body: JSON.stringify({
+                post_id
+            })
+        })
+        
+    } 
+}
+
+
 
 function like_post(post_id){
     // get current user
