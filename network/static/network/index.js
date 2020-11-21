@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function(){
 
-    document.querySelector('#all-posts').addEventListener('click', () => posts_box('all-posts'));
+    document.querySelector('#all-posts').addEventListener('click', (event) => {
+        event.preventDefault(); 
+        posts_box('all-posts');
+    }); 
     if (document.getElementById('user-link').innerHTML != 'Visitor'){
         document.querySelector('#all-authors').addEventListener('click', () => profiles_box('all-profiles'));
         document.querySelector('#following').addEventListener('click', () => posts_box('follow-posts'));
@@ -46,28 +49,39 @@ document.addEventListener('click', event => {
     
 });
 //-----------------------------------------------------------------------    
+//document.getElementById('prev-page').addEventListener('click', prev_page());
+//document.getElementById('next-page').addEventListener('click', next_page());
 
 });
 
-var all_authors = '';
+var section;
+var gpostsbox;
+var gpostPageNum;
+var postPages;
+var gprofilePageNum;
+var profilesPages;
 
-function posts_box(postsbox){
-    fetch(`http://localhost:8000/posts_box/${postsbox}`)
+function posts_box(postsbox, postPageNum=1){
+    fetch(`http://localhost:8000/posts_box/${postsbox}/${postPageNum}`)
     .then(response => response.json())
-    .then(posts => {
+    .then(postsObj => {
+        posts = postsObj['post-list'];
+        postPages = postsObj['pages'];
+        section = postsObj['section'];
+        gpostsbox = postsbox;
+        gpostPageNum = postPageNum;
         const   $cleanProfiles = document.getElementById('profiles-container'),
                 $cleanPosts = document.getElementById('posts-container'),
                 $individualContainer = document.createElement('div'),
                 $containerListPost = document.createDocumentFragment();
         // get current user
-        let currentUser = document.querySelector('#box-user').value;
-        let currentUserId = document.querySelector('#box-user-id').value;
-        
+        const currentUser = document.querySelector('#box-user').value;
+        const currentUserId = document.querySelector('#box-user-id').value;
+
+        // if no posts, backend send post.id = 0
         if (posts.id != 0){
-            // Clean page for old content for all posts display
-            all_authors = posts[0].section; 
-            
-            if (all_authors == 'all-posts' || all_authors == 'follow-posts'){
+            // Clean page for old content for all posts display            
+            if (section == 'all-posts' || section == 'follow-posts'){
                 $cleanProfiles.innerHTML = '';
                 $cleanPosts.innerHTML = '';
                 $cleanProfiles.style.display = 'none';
@@ -225,19 +239,54 @@ function posts_box(postsbox){
             document.querySelector('#posts-container').appendChild($containerListPost); 
         } else {
             window.alert('Following has no posts to display.');
-        }       
+        }    
+
+        document.getElementById('current-page').innerHTML = `Page ${postPageNum} of ${postPages}`;
+        
+        const $prevPage = document.getElementById('prev-page');
+        const $nextPage = document.getElementById('next-page');
+                
+        if (postPageNum > 1) {
+            $prevPage.style.display = 'block';
+            } else {
+            $prevPage.style.display = 'none';
+        }
+        if (postPages - postPageNum > 0) {
+            $nextPage.style.display = 'block';
+        } else {
+            $nextPage.style.display = 'none';
+        }
+/*        
+        $prevPage.addEventListener('click', () => {
+            postPageNum--;
+            posts_box(postsb, postPageNum);
+            return false;
+        });
+        
+
+        $nextPage.addEventListener('click', () => {
+            postPageNum++;
+            posts_box(postsb, postPageNum);
+            return false;
+        });
+*/
+
+        //console.log(postsObj);
     })    
 }
 
 
-
-function profiles_box(profilebox){
-    fetch(`http://localhost:8000/profile_box/${profilebox}`)
+function profiles_box(profilebox, profilePageNum=1){
+    fetch(`http://localhost:8000/profile_box/${profilebox}/${profilePageNum}`)
     .then(response => response.json())
-    .then(profiles => {
+    .then(profilesObj => {
+        profiles = profilesObj['profiles_list'];
+        profilesPages = profilesObj['pages'];
+        section = profilesObj['section'];
+        gprofilePageNum = profilePageNum;
         // get current user
-        let currentUser = document.querySelector('#box-user').value;
-        let currentUserId = document.querySelector('#box-user-id').value;
+        const currentUser = document.querySelector('#box-user').value;
+        const currentUserId = document.querySelector('#box-user-id').value;
         
         
         const   $cleanProfiles = document.getElementById('profiles-container'),
@@ -337,10 +386,6 @@ function profiles_box(profilebox){
 
             $containerAll.appendChild($containerProfiles);
 
-            console.log('currentuser',currentUserId);
-                    console.log('elemet.id',element.id);
-                    
-
             $iconFollowers.onclick= function(){
                 if (currentUser != 'Visitor'){
                     if (currentUserId != element.id){ 
@@ -357,7 +402,7 @@ function profiles_box(profilebox){
                             followFlag = false;
                             if (profiles.length == 1){
                                 //window.alert('Stop follow');
-                                posts_box(element.username);};
+                                posts_box(element.username, postPageNum);};
                             return followFlag;
                         }
                         if (!followFlag){
@@ -372,7 +417,7 @@ function profiles_box(profilebox){
                             followFlag = true;
                             if (profiles.length == 1){
                                 //window.alert('Start follow');
-                                posts_box(element.username);};
+                                posts_box(element.username, postPageNum);};
                             return followFlag;
                         }
                     } else {
@@ -384,12 +429,40 @@ function profiles_box(profilebox){
 
             if (element.myposts.length > 0 && profiles.length == 1) {
                 $cleanPosts.style.display = 'block';
-                posts_box(element.username);
+                posts_box(element.username, gpostPageNum);
             }
             
         });
-        document.querySelector('#profiles-container').appendChild($containerAll);        
+        document.querySelector('#profiles-container').appendChild($containerAll);    
+        
+        document.getElementById('current-page').innerHTML = `Page ${profilePageNum} of ${profilesPages}`;
+        
+        const $prevPage = document.getElementById('prev-page');
+        const $nextPage = document.getElementById('next-page');
+                
+        if (profilePageNum > 1) {
+            $prevPage.style.display = 'block';
+            } else {
+            $prevPage.style.display = 'none';
+        }
+        if (profilesPages - profilePageNum > 0) {
+            $nextPage.style.display = 'block';
+        } else {
+            $nextPage.style.display = 'none';
+        }
+
     })    
+}
+
+
+function next_page(event) {
+    console.log('gpostsbox', gpostsbox);
+    console.log('section', section);
+    console.log('gprofilePageNum', gprofilePageNum);
+    console.log('profilesPages', profilesPages);
+    console.log('gpostPageNum', gpostPageNum);
+    console.log('postPages', postPages);
+    
 }
 
 // new and edit post -------------------------------------------
@@ -401,13 +474,6 @@ function new_post() {
     document.getElementById("myForm").style.display = "block";
     document.getElementById("post-title").innerHTML = `New Post by ${document.getElementById('user-link').innerHTML}`;
     document.getElementById("post").focus();
-    /*document.getElementById("send").disabled = false;
-    if (document.getElementById('post').value === ''){
-        document.getElementById("send").disabled = true;
-    }
-    if (document.getElementById('post').value != '') {
-        document.getElementById("send").disabled = false;
-    }*/
 
     document.querySelector("#send").removeEventListener("click", sendNewPost);
     document.querySelector("#send").removeEventListener("click", sendEditPost);
@@ -435,7 +501,7 @@ function sendNewPost(event) {
         if (resultKey == 'error') {
         window.alert(result['error']);
         }
-        posts_box('all-posts');
+        posts_box('all-posts', 1);
     })
     .catch(() => {
         closeForm();

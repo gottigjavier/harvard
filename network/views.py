@@ -6,22 +6,30 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, InvalidPage
 import json
 import datetime
 
 from .models import User, Posts
 
 
+CANT_OBJ = 10
+#page_num = 1
+
 def index(request):
     return render(request, "network/index.html")
 
-def posts_box(request, postsbox):
+def posts_box(request, postsbox, posts_page_num):
     # List all posts
     if postsbox == 'all-posts':
+        print(posts_page_num)
         all_posts = Posts.objects.all()
         all_posts = all_posts.order_by("-created").all()
-        posts = [post.serialize() for post in all_posts]
-
+        page_posts = Paginator(all_posts, CANT_OBJ)
+        list_posts = page_posts.page(posts_page_num).object_list
+        posts = [post.serialize() for post in list_posts]
+        pages_count = page_posts.num_pages
+        
         all_users = User.objects.all()
         users = ([user.serialize() for user in all_users])
 
@@ -29,55 +37,92 @@ def posts_box(request, postsbox):
             for user in users:
                 if post['author'] == user['username']:
                     post['author'] = user
-            post['section'] = postsbox
-
-    # list of posts by authors i'm following
+            #post['section'] = postsbox
+        
+        posts = {
+            "pages": pages_count,
+            "post-list": posts,
+            "section": postsbox
+        }
+        # list of posts by authors i'm following
     elif postsbox == 'follow-posts':
         if Posts.objects.filter(author__followers=request.user).exists():
             follow_posts = Posts.objects.filter(author__followers=request.user)
             follow_posts = follow_posts.order_by("-created").all()
-            posts = ([follow_post.serialize() for follow_post in follow_posts])
+            page_posts = Paginator(follow_posts, CANT_OBJ)
+            list_posts = page_posts.page(posts_page_num).object_list
+            posts = [post.serialize() for post in list_posts]
             follow_users = User.objects.filter(followers=request.user)
             follow_usr = ([follow_user.serialize() for follow_user in follow_users])
+            pages_count = page_posts.num_pages
             for post in posts:
                 for user in follow_usr:
                     if post['author'] == user['username']:
                         post['author'] = user
-                post['section'] = postsbox
+                #post['section'] = postsbox
+            posts = {
+                "pages": pages_count,
+                "post-list": posts,
+                "section": postsbox
+            }
         else:
+            # fronted wait post. If no posts, send post.id = 0
             post = Posts(id=0, text='', created=datetime.datetime.now(), author=request.user)
+            pages_count = 1
             posts = post.serialize()
-            print(posts)
-
+            posts = {
+                "pages": pages_count,
+                "post-list": posts,
+                "section": postsbox
+            }
+        
     # list of posts by a particular author
     else:
         author_posts = Posts.objects.filter(author__username=postsbox)
         author_posts = author_posts.order_by("-created").all()
-        posts = [post.serialize() for post in author_posts]
+        page_posts = Paginator(author_posts, CANT_OBJ)
+        list_posts = page_posts.page(posts_page_num).object_list
+        posts = [post.serialize() for post in list_posts]
+        pages_count = page_posts.num_pages
 
         post_user = User.objects.get(username=postsbox)
         usr = (post_user.serialize())
         
         for post in posts:
             post['author'] = usr
-            post['section'] = usr['username']
+            #post['section'] = usr['username']
+        posts = {
+                "pages": pages_count,
+                "post-list": posts,
+                "section": usr['username']
+            }
 
     return JsonResponse( posts ,safe=False)
 
 
-def profile_box(request, profilebox):
+def profile_box(request, profilebox, profiles_page_num):
     if profilebox == 'all-profiles':
-        profiles = User.objects.all()
-        profiles = profiles.order_by("username").all()
-        return JsonResponse([profile.serialize() for profile in profiles], safe=False)
+        profiles_obj = User.objects.all()
+        profiles_obj = profiles_obj.order_by("username").all()
+        page_profiles = Paginator(profiles_obj, CANT_OBJ)
+        list_profiles = page_profiles.page(profiles_page_num).object_list
+        profiles_count = page_profiles.num_pages
+        profiles_serial = [profile.serialize() for profile in list_profiles]
+        
+        profiles ={
+            'section': profilebox,
+            'pages': profiles_count,
+            'profiles_list': profiles_serial
+        } 
+        return JsonResponse(profiles, safe=False)
     else:
-        profile = User.objects.get(username=profilebox)
-        profile = profile.serialize()
-        myposts = profile['myposts']
-        posts = Posts.objects.filter(author__username=profilebox)
-        posts = ([post.serialize() for post in posts])
-        profile['posts'] = posts
-        return JsonResponse([profile], safe=False)
+        profile_obj = User.objects.get(username=profilebox)
+        profile = [profile_obj.serialize()]
+        profile = {
+            'section': 'one-profile',
+            'profiles_list': profile
+        }
+        return JsonResponse(profile, safe=False)
 
 @csrf_exempt
 @login_required
