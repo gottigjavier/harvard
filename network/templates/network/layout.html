@@ -5,17 +5,30 @@
     <head>
         <title>{% block title %}Social Network{% endblock %}</title>
         <script src="https://kit.fontawesome.com/d26bb3691d.js" crossorigin="anonymous"></script>
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        
         <link href="{% static 'network/styles.css' %}" rel="stylesheet">
         {% block script %}
         {% endblock %}
     </head>
     <body>
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <nav id="my-nav" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <a class="navbar-brand" href="#">Network</a>
+
+            <!-- Toggler/collapsibe Button -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
           
-            <div>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -63,7 +76,7 @@
                     <h3 id="post-title"></h3>   
                 </div>
                 <div>      
-                    <textarea id="post" class="post-text" placeholder="" name="post" required></textarea>
+                    <textarea id="post" class="post-text" placeholder="550 char max" name="post" maxlength="550" required></textarea>
                 </div>
                 <div id="form-buttons">                
                     <button type="submit" id="send" class="post-btn" title="Send">
@@ -81,7 +94,6 @@
             {% block body %}
             {% endblock %}
         </div>
-
 
     </body>
 </html>

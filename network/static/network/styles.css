@@ -1,3 +1,12 @@
+#my-nav{
+  z-index: 9;
+  opacity: 0.8;
+}
+
+#my-nav:hover{
+  opacity: 1;
+}
+
 #posts_view {
     background-color: snow;
 }
@@ -30,13 +39,9 @@
   }
 }
 
-.post-style {
-    background-color: seashell !important;
-}
-
 
 .post-style {
-  background-color: seashell !important;
+  background-color:rgb(244, 248, 248) !important;
   animation-name: hide !important;
   animation-duration: 2s !important;
   animation-fill-mode: forwards !important;
@@ -49,7 +54,13 @@
   line-height: 150%;
 }
 
+.delete-event{
+opacity: 0.8;
+color: tomato;
+}
+
 .delete-event:hover{
+  opacity: 1;
   color: rgb(231, 15, 7);
   cursor: pointer;
 }
@@ -74,10 +85,17 @@
 .profile-icon{
   font-size: 1.5rem;
   color: rgb(223, 113, 35);
+  border-radius: 50%;
 }
 .profile-name:hover{
   color: rgb(139, 59, 1);
   cursor: pointer;
+}
+
+.current-user{
+  background-color: rgb(223, 240, 240) !important;
+  font-size: 1.5rem;
+  color: rgb(223, 113, 35);
 }
 
 .span-icon:hover{
@@ -143,7 +161,7 @@
     cursor: pointer;
     opacity: 0.7;
     position: fixed;
-    bottom: 5rem;
+    bottom: 31%;
     right: 8px;
     width:  70px;
   }
@@ -153,10 +171,10 @@
     opacity: 0.9;
     display: none;
     position: fixed;
-    bottom: 2rem;
+    bottom: 30%;
     right: 5px;
     border: 3px solid #f1f1f1;
-    z-index: 9;
+    z-index: 15;
   }
   
   /* Add styles to the form container */

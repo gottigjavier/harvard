@@ -4,8 +4,8 @@ from datetime import datetime
 from django.utils import timezone
 
 class User(AbstractUser):
-    following = models.ManyToManyField('self', blank=True, default='')
-    followers = models.ManyToManyField('self', blank=True, default='')
+    following = models.ManyToManyField('self', symmetrical=False, related_name='following_field', blank=True, default='')
+    followers = models.ManyToManyField('self', symmetrical=False, related_name='followers_field', blank=True, default='')
     myposts = models.ManyToManyField('Posts', related_name='myposts', blank=True, default='')
     image = models.ImageField(null=True, blank=True)
     

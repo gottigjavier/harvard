@@ -13,8 +13,9 @@ import datetime
 from .models import User, Posts
 
 
-CANT_OBJ = 10
-#page_num = 1
+CANT_POSTS = 10 # Items per post page
+CANT_PROFILES = 12 # Items per profile page
+
 
 def index(request):
     return render(request, "network/index.html")
@@ -25,7 +26,7 @@ def posts_box(request, postsbox, posts_page_num):
         print(posts_page_num)
         all_posts = Posts.objects.all()
         all_posts = all_posts.order_by("-created").all()
-        page_posts = Paginator(all_posts, CANT_OBJ)
+        page_posts = Paginator(all_posts, CANT_POSTS)
         list_posts = page_posts.page(posts_page_num).object_list
         posts = [post.serialize() for post in list_posts]
         pages_count = page_posts.num_pages
@@ -37,19 +38,18 @@ def posts_box(request, postsbox, posts_page_num):
             for user in users:
                 if post['author'] == user['username']:
                     post['author'] = user
-            #post['section'] = postsbox
-        
+            
         posts = {
             "pages": pages_count,
             "post-list": posts,
             "section": postsbox
         }
-        # list of posts by authors i'm following
+    # list of posts by authors i'm following
     elif postsbox == 'follow-posts':
         if Posts.objects.filter(author__followers=request.user).exists():
             follow_posts = Posts.objects.filter(author__followers=request.user)
             follow_posts = follow_posts.order_by("-created").all()
-            page_posts = Paginator(follow_posts, CANT_OBJ)
+            page_posts = Paginator(follow_posts, CANT_POSTS)
             list_posts = page_posts.page(posts_page_num).object_list
             posts = [post.serialize() for post in list_posts]
             follow_users = User.objects.filter(followers=request.user)
@@ -59,7 +59,6 @@ def posts_box(request, postsbox, posts_page_num):
                 for user in follow_usr:
                     if post['author'] == user['username']:
                         post['author'] = user
-                #post['section'] = postsbox
             posts = {
                 "pages": pages_count,
                 "post-list": posts,
@@ -80,7 +79,7 @@ def posts_box(request, postsbox, posts_page_num):
     else:
         author_posts = Posts.objects.filter(author__username=postsbox)
         author_posts = author_posts.order_by("-created").all()
-        page_posts = Paginator(author_posts, CANT_OBJ)
+        page_posts = Paginator(author_posts, CANT_POSTS)
         list_posts = page_posts.page(posts_page_num).object_list
         posts = [post.serialize() for post in list_posts]
         pages_count = page_posts.num_pages
@@ -90,7 +89,6 @@ def posts_box(request, postsbox, posts_page_num):
         
         for post in posts:
             post['author'] = usr
-            #post['section'] = usr['username']
         posts = {
                 "pages": pages_count,
                 "post-list": posts,
@@ -104,7 +102,7 @@ def profile_box(request, profilebox, profiles_page_num):
     if profilebox == 'all-profiles':
         profiles_obj = User.objects.all()
         profiles_obj = profiles_obj.order_by("username").all()
-        page_profiles = Paginator(profiles_obj, CANT_OBJ)
+        page_profiles = Paginator(profiles_obj, CANT_PROFILES)
         list_profiles = page_profiles.page(profiles_page_num).object_list
         profiles_count = page_profiles.num_pages
         profiles_serial = [profile.serialize() for profile in list_profiles]
@@ -120,6 +118,7 @@ def profile_box(request, profilebox, profiles_page_num):
         profile = [profile_obj.serialize()]
         profile = {
             'section': 'one-profile',
+            'pages': 1,
             'profiles_list': profile
         }
         return JsonResponse(profile, safe=False)
@@ -151,7 +150,7 @@ def edit_post(request):
         current_user = User.objects.get(username=request.user)
         data = json.loads(request.body)
         post_text = data['upBody']
-        post_id = data['postid']
+        post_id = data['gpostid']
         post = Posts.objects.get(id=post_id)
         if current_user.username == post.author.username:
             post.text = post_text
@@ -205,18 +204,25 @@ def follow_author(request):
         user_id = request.user.id
         data = json.loads(request.body)
         author_id = data['author_id']
-        author_follow = User.objects.get(id=author_id)
+        current_user = User.objects.get(id=user_id)
+        author_to_follow = User.objects.get(id=author_id)
 
-        author_serial = author_follow.serialize()
+        current_user_serial = current_user.serialize()
+        current_user_following = current_user_serial['following']
+
+        author_serial = author_to_follow.serialize()
         author_serial_followers = author_serial['followers']
-        print(author_serial_followers)
+        
         if user_id not in author_serial_followers:
             author_serial_followers.append(user_id)
-            author_follow.followers.set(author_serial_followers)
+            author_to_follow.followers.set(author_serial_followers)
+            current_user_following.append(author_id)
+            current_user.following.set(current_user_following)
         else:
             author_serial_followers.remove(user_id)
-            author_follow.followers.set(author_serial_followers)
-        print(author_serial_followers)
+            author_to_follow.followers.set(author_serial_followers)
+            current_user_following.remove(author_id)
+            current_user.following.set(current_user_following)
     return JsonResponse({"message": "Follow proceced."}, status=201)
 
 
@@ -263,6 +269,9 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
+            #user.save()
+            user.image = request.FILES.get("image", "null")
+            print('user.image.path', user.image)
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
