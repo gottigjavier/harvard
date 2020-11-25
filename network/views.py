@@ -23,7 +23,6 @@ def index(request):
 def posts_box(request, postsbox, posts_page_num):
     # List all posts
     if postsbox == 'all-posts':
-        print(posts_page_num)
         all_posts = Posts.objects.all()
         all_posts = all_posts.order_by("-created").all()
         page_posts = Paginator(all_posts, CANT_POSTS)
@@ -65,7 +64,7 @@ def posts_box(request, postsbox, posts_page_num):
                 "section": postsbox
             }
         else:
-            # fronted wait post. If no posts, send post.id = 0
+            # fronted wait post. If no posts, send post.id = 0 -> catch(error)
             post = Posts(id=0, text='', created=datetime.datetime.now(), author=request.user)
             pages_count = 1
             posts = post.serialize()
@@ -269,9 +268,7 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
-            #user.save()
             user.image = request.FILES.get("image", "null")
-            print('user.image.path', user.image)
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {

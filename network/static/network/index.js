@@ -130,7 +130,7 @@ function posts_box(postsbox, postPageNum=1){
             }
             if (currentUser != 'Visitor'){
                 if (element.author.followers.toString().includes(currentUserId)){
-                    $spanFollow.setAttribute('class', 'span-orange icon-m');
+                    $spanFollow.setAttribute('class', 'span-green icon-m');
                     $iconFollow.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
                     $spanFollow.setAttribute('title', 'Following');
                 } else {
@@ -275,6 +275,8 @@ function profiles_box(profilebox, profilePageNum=1){
         const   $cleanProfiles = document.getElementById('profiles-container'),
                 $cleanPosts = document.getElementById('posts-container'),
                 $containerAll = document.createDocumentFragment();
+
+                console.log(gsection);
         // Clean page for old content
         $cleanProfiles.innerHTML = '';
         $cleanPosts.innerHTML = '';
@@ -332,18 +334,23 @@ function profiles_box(profilebox, profilePageNum=1){
             $following.setAttribute('class', 'span-black');
 
             if (element.followers.toString().includes(currentUserId)){
-                $iconFollowers.setAttribute('class', 'follow-icon span-orange fas fa-arrow-alt-circle-right');
+                $iconFollowers.setAttribute('class', 'follow-icon span-green fas fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers (including you)');
                 var followFlag = true;
             } else {
-                $iconFollowers.setAttribute('class', 'follow-icon span-orange far fa-arrow-alt-circle-right');
+                $iconFollowers.setAttribute('class', 'follow-icon span-green far fa-arrow-alt-circle-right');
                 $followers.setAttribute('title', 'Followers');
                 var followFlag = false;
             }
+            console.log(element.following);
+            if (element.following.toString().includes(currentUserId)){
+                $iconFollowing.setAttribute('class', 'span-orange fas fa-arrow-alt-circle-right');
+                $following.setAttribute('title', 'Following(you too)');
+            } else {
+                $iconFollowing.setAttribute('class', 'span-orange far fa-arrow-alt-circle-right');
+                $following.setAttribute('title', 'Following');
+            }
 
-            $iconFollowing.setAttribute('class', 'span-green far fa-arrow-alt-circle-right');
-            $following.setAttribute('title', 'Following');
-            
             $spanFollowers.setAttribute('class', 'icon-m px-1');            
             $spanFollowing.setAttribute('class', 'icon-m px-1');
             $iconPosts.setAttribute('class', 'fas fa-feather-alt px-1');
@@ -374,51 +381,53 @@ function profiles_box(profilebox, profilePageNum=1){
                 $username.innerHTML = element.username;
                 $profiles.setAttribute('class', 'm-3 py-2 px-5 shadow-lg bg-light rounded current-user');
             }
-
+            
             // follow/unfollow
-            $iconFollowers.onclick= function(){
+            $iconFollowers.onclick= async () => {
                 if (currentUser != 'Visitor'){
                     if (currentUserId != element.id){ 
                         if (followFlag){
+                            if (gsection === 'all-profiles'){ 
+                                currentUserObj.following.length--;
+                                $userSpanForFollowing.innerHTML = currentUserObj.following.length;                            
+                                $userSpanFollowing.appendChild($userIconFollowing);
+                                $userFollowing.appendChild($userSpanFollowing);
+                                $userFollowing.appendChild($userSpanForFollowing);
+                            }
                             element.followers.length --;
-                            currentUserObj.following.length--;
-
-                            $userSpanForFollowing.innerHTML = currentUserObj.following.length;                            
-                            $userSpanFollowing.appendChild($userIconFollowing);
-                            $userFollowing.appendChild($userSpanFollowing);
-                            $userFollowing.appendChild($userSpanForFollowing);
-
-                            $spanFollowers.setAttribute('class', 'follow-icon span-orange icon-m px-1');
+                            $spanFollowers.setAttribute('class', 'follow-icon span-green icon-m px-1');
                             $iconFollowers.setAttribute('class', 'follow-event far fa-arrow-alt-circle-right');
                             $spanFollowers.setAttribute('title', 'Click to return to follow');                                                        
                             $followers.innerHTML = element.followers.length;                            
                             $spanFollowers.appendChild($iconFollowers);
-                            $followers.appendChild($spanFollowers);
-                            follow_author(element.id);
+                            $followers.appendChild($spanFollowers);                            
                             followFlag = false;
-                            if (profiles.length == 1){
-                                posts_box(element.username, gpostPageNum);};
+                            follN = await follow_author(element.id);
+                            if (gsection != 'all-profiles'){
+                                posts_box(element.username, gpostPageNum);
+                            };
                             return followFlag;
                         }
                         if (!followFlag){
+                            if (gsection === 'all-profiles'){ 
+                                currentUserObj.following.length++;
+                                $userSpanForFollowing.innerHTML = currentUserObj.following.length;                            
+                                $userSpanFollowing.appendChild($userIconFollowing);
+                                $userFollowing.appendChild($userSpanFollowing);
+                                $userFollowing.appendChild($userSpanForFollowing);
+                            }
                             element.followers.length ++;
-                            currentUserObj.following.length++;
-
-                            $userSpanForFollowing.innerHTML = currentUserObj.following.length;                            
-                            $userSpanFollowing.appendChild($userIconFollowing);
-                            $userFollowing.appendChild($userSpanFollowing);
-                            $userFollowing.appendChild($userSpanForFollowing);
-
-                            $spanFollowers.setAttribute('class', 'follow-icon span-orange icon-m px-1');
+                            $spanFollowers.setAttribute('class', 'follow-icon span-green icon-m px-1');
                             $iconFollowers.setAttribute('class', 'follow-event fas fa-arrow-alt-circle-right');
                             $spanFollowers.setAttribute('title', 'Click to return to unfollow');                             
                             $followers.innerHTML = element.followers.length;
                             $spanFollowers.appendChild($iconFollowers);
-                            $followers.appendChild($spanFollowers);
-                            follow_author(element.id);
+                            $followers.appendChild($spanFollowers);                            
                             followFlag = true;
-                            if (profiles.length == 1){
-                                posts_box(element.username, gpostPageNum);};
+                            follY = await follow_author(element.id);
+                            if (gsection != 'all-profiles'){
+                                posts_box(element.username, gpostPageNum);
+                            };
                             return followFlag;
                         }
                     } else {
@@ -471,7 +480,6 @@ function profiles_box(profilebox, profilePageNum=1){
 function next_page() {
     if (gsection != 'all-profiles' && gpostPages - gpostPageNum > 0){
         gpostPageNum++;
-        console.log('gpostPageNum!!!!!!', gpostPageNum);
         posts_box(gsection, gpostPageNum);
     } else
     if (gprofilesPages - gprofilePageNum > 0){
@@ -641,11 +649,11 @@ function like_post(post_id){
 // End Like Post -----------------------------------------------------------
 
 // Follow Author -------------------------------------------------------------
-function follow_author(author_id){
+async function follow_author(author_id){
     // get current user
     var currentUserId = document.querySelector('#box-user-id').value;
     if (currentUserId != 'Visitor') {
-    fetch('http://localhost:8000/follow_author', {
+    response = await fetch('http://localhost:8000/follow_author', {
         method: 'PUT',
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -656,9 +664,15 @@ function follow_author(author_id){
             author_id
         })
     })
+//    .then(response => {
+//        response.json();
+        //let resp = response.ok;
+        //return resp;
+//    })
     .catch(error => {
         error = 'An ERROR occurred';
-        window.alert(error);            
+        window.alert(error);   
+        return false;         
     });
     }
 }
