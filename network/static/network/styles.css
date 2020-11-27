@@ -15,30 +15,24 @@
   margin-top: 5rem;
 }
 
+/*  "delete post" event, visual effect */
 @keyframes hide {
   0% {
     opacity: 1;
     height: 100%;
     line-height: 100%;
-    /*padding: 100;
-    margin-bottom: initial;*/
   }
   80% {
     opacity: 0;
     height: 100%;
     line-height: 100%;
-    /*padding: 0;
-    margin-bottom: 0;*/
   }
   100% {
     opacity: 0;
     height: 0;
     line-height: 0;
-    /*padding: 0;
-    margin: 0;*/
   }
 }
-
 
 .post-style {
   background-color:rgb(244, 248, 248) !important;
@@ -54,6 +48,7 @@
   line-height: 150%;
 }
 
+/* icons styles */
 .delete-event{
 opacity: 0.8;
 color: tomato;
@@ -74,19 +69,12 @@ color: tomato;
   cursor: pointer;
 }
 
-.span-icon{
-    font-size: 1.3rem;
-}
-
-.icon-m, .follow-icon{
-    font-size: 1.6rem;
-}
-
-.profile-icon{
+img, .profile-icon{
   font-size: 1.5rem;
   color: rgb(223, 113, 35);
-  border-radius: 50%;
+  border-radius: 40%;
 }
+
 .profile-name:hover{
   color: rgb(139, 59, 1);
   cursor: pointer;
@@ -98,9 +86,34 @@ color: tomato;
   color: rgb(223, 113, 35);
 }
 
+.user-style {
+  width: 33% !important;
+  display: inline-flex;
+  
+}
+
+.user-row {
+  display: inline-flex;
+}
+
+.user-icon {
+width: 50px;
+height: 50px;
+  font-size: 3rem;
+  border-radius: 50%;
+}
+
+.span-icon{
+  font-size: 1.3rem;
+}
+
 .span-icon:hover{
     color: tomato;
     cursor: pointer;
+}
+
+.icon-m, .follow-icon{
+  font-size: 1.6rem;
 }
 
 .follow-icon:hover{
@@ -123,7 +136,6 @@ color: tomato;
 .span-blue {
     font-size: 1.8rem;
     color: dodgerblue;
-    opacity: 0.8;
 }
 .span-blue:hover {
     opacity: 1;
@@ -132,24 +144,6 @@ color: tomato;
 .span-orange {
     color: rgb(245, 103, 9);
 }
-
-.user-style {
-    width: 33% !important;
-    display: inline-flex;
-    
-}
-
-.user-row {
-    display: inline-flex;
-}
-
-.user-icon {
-  width: 50px;
-  height: 50px;
-    font-size: 3rem;
-    border-radius: 50%;
-}
-
 
 /* Button used to open the contact form - fixed at the page */
 .open-button {

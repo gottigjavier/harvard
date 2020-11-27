@@ -63,6 +63,7 @@ function posts_box(postsbox, postPageNum=1){
         gpostPages = postsObj['pages'];
         gsection = postsObj['section'];
         gpostPageNum = postPageNum;
+        
         const   $cleanProfiles = document.getElementById('profiles-container'),
                 $cleanPosts = document.getElementById('posts-container'),
                 $individualContainer = document.createElement('div'),
@@ -95,6 +96,7 @@ function posts_box(postsbox, postPageNum=1){
                 $colAuthorL = document.createElement('div'),
                 $colAuthorC = document.createElement('div'),
                 $colAuthorR = document.createElement('div'),
+                $iconUser = document.createElement('img'),
                 $authorIcon = document.createElement('div'),
                 $author = document.createElement('div'),
                 $created = document.createElement('div'),
@@ -144,8 +146,7 @@ function posts_box(postsbox, postPageNum=1){
             $colAuthorL.appendChild($spanFollow);
             $author.innerHTML = element.author.username;
                 
-            if (element.author.image && element.author.image != 'null') {
-                const $iconUser = document.createElement('img');
+            if (element.author.image) {
                 $iconUser.setAttribute('src', `${element.author.image}`);
                 $iconUser.setAttribute('width', '60');
                 $iconUser.setAttribute('height', '50');
@@ -153,8 +154,9 @@ function posts_box(postsbox, postPageNum=1){
                 $authorIcon.appendChild($author);
                 $colAuthorC.appendChild($authorIcon);
             } else {
-                const $iconUser = document.createElement('i');
-                $iconUser.setAttribute('class', 'fas fa-user');
+                $iconUser.setAttribute('src', 'https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png');
+                $iconUser.setAttribute('width', '60');
+                $iconUser.setAttribute('height', '50');
                 $authorIcon.appendChild($iconUser);
                 $authorIcon.appendChild($author);
                 $colAuthorC.appendChild($authorIcon);
@@ -276,7 +278,6 @@ function profiles_box(profilebox, profilePageNum=1){
                 $cleanPosts = document.getElementById('posts-container'),
                 $containerAll = document.createDocumentFragment();
 
-                console.log(gsection);
         // Clean page for old content
         $cleanProfiles.innerHTML = '';
         $cleanPosts.innerHTML = '';
@@ -298,19 +299,20 @@ function profiles_box(profilebox, profilePageNum=1){
                 $spanFollowing = document.createElement('span'),
                 $spanFollowers = document.createElement('span'),
                 $spanPosts = document.createElement('span'),
+                $iconUser = document.createElement('img'),
                 $spanUser = document.createElement('span'),
                 $userAndIcon = document.createElement('div');
-
-                if (element.image) {
-                    const $iconUser = document.createElement('img');
+            
+                if (element.image && element.image != 'undefined') {                    
                     $spanUser.appendChild($iconUser);
                     $iconUser.setAttribute('src', `${element.image}`);
                     $iconUser.setAttribute('width', '70');
                     $iconUser.setAttribute('height', '60'); 
-                } else {
-                    const $iconUser = document.createElement('i');
+                } else {                 
+                    $iconUser.setAttribute('src', 'https://upload.wikimedia.org/wikipedia/commons/f/f4/User_Avatar_2.png');
                     $spanUser.appendChild($iconUser);
-                    $iconUser.setAttribute('class', 'fas fa-user');
+                    $iconUser.setAttribute('width', '70');
+                    $iconUser.setAttribute('height', '60');
                 }
                             
             $followers.innerHTML = element.followers.length;
@@ -342,7 +344,6 @@ function profiles_box(profilebox, profilePageNum=1){
                 $followers.setAttribute('title', 'Followers');
                 var followFlag = false;
             }
-            console.log(element.following);
             if (element.following.toString().includes(currentUserId)){
                 $iconFollowing.setAttribute('class', 'span-orange fas fa-arrow-alt-circle-right');
                 $following.setAttribute('title', 'Following(you too)');
@@ -437,7 +438,7 @@ function profiles_box(profilebox, profilePageNum=1){
             };            
             
             // Display profile and its posts (if they exists) ----------------------------
-            if (gsection != 'all-profiles' && element.myposts.length > 0) {
+            if (gsection != 'all-profiles') {
                     $cleanPosts.style.display = 'block';
                     posts_box(element.username, 1);                
             }
@@ -664,11 +665,6 @@ async function follow_author(author_id){
             author_id
         })
     })
-//    .then(response => {
-//        response.json();
-        //let resp = response.ok;
-        //return resp;
-//    })
     .catch(error => {
         error = 'An ERROR occurred';
         window.alert(error);   

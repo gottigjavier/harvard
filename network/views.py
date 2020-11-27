@@ -23,26 +23,34 @@ def index(request):
 def posts_box(request, postsbox, posts_page_num):
     # List all posts
     if postsbox == 'all-posts':
-        all_posts = Posts.objects.all()
-        all_posts = all_posts.order_by("-created").all()
-        page_posts = Paginator(all_posts, CANT_POSTS)
-        list_posts = page_posts.page(posts_page_num).object_list
-        posts = [post.serialize() for post in list_posts]
-        pages_count = page_posts.num_pages
-        
-        all_users = User.objects.all()
-        users = ([user.serialize() for user in all_users])
-
-        for post in posts:
-            for user in users:
-                if post['author'] == user['username']:
-                    post['author'] = user
+        if Posts.objects.all().exists():
+            all_posts = Posts.objects.all()
+            all_posts = all_posts.order_by("-created").all()
+            page_posts = Paginator(all_posts, CANT_POSTS)
+            list_posts = page_posts.page(posts_page_num).object_list
+            posts = [post.serialize() for post in list_posts]
+            pages_count = page_posts.num_pages
             
-        posts = {
-            "pages": pages_count,
-            "post-list": posts,
-            "section": postsbox
-        }
+            all_users = User.objects.all()
+            users = ([user.serialize() for user in all_users])
+
+            for post in posts:
+                for user in users:
+                    if post['author'] == user['username']:
+                        post['author'] = user
+                
+            posts = {
+                "pages": pages_count,
+                "post-list": posts,
+                "section": postsbox
+            }
+        else:
+            # catch -> no posts
+            posts = {
+                "pages": 0,
+                "post-list": '',
+                "section": postsbox
+            }
     # list of posts by authors i'm following
     elif postsbox == 'follow-posts':
         if Posts.objects.filter(author__followers=request.user).exists():
@@ -64,35 +72,37 @@ def posts_box(request, postsbox, posts_page_num):
                 "section": postsbox
             }
         else:
-            # fronted wait post. If no posts, send post.id = 0 -> catch(error)
-            post = Posts(id=0, text='', created=datetime.datetime.now(), author=request.user)
-            pages_count = 1
-            posts = post.serialize()
+            # catch -> no posts
             posts = {
-                "pages": pages_count,
-                "post-list": posts,
+                "pages": 0,
+                "post-list": '',
                 "section": postsbox
             }
         
     # list of posts by a particular author
     else:
-        author_posts = Posts.objects.filter(author__username=postsbox)
-        author_posts = author_posts.order_by("-created").all()
-        page_posts = Paginator(author_posts, CANT_POSTS)
-        list_posts = page_posts.page(posts_page_num).object_list
-        posts = [post.serialize() for post in list_posts]
-        pages_count = page_posts.num_pages
-
         post_user = User.objects.get(username=postsbox)
         usr = (post_user.serialize())
-        
-        for post in posts:
-            post['author'] = usr
-        posts = {
-                "pages": pages_count,
-                "post-list": posts,
-                "section": usr['username']
-            }
+        if Posts.objects.filter(author__username=postsbox).exists():
+            author_posts = Posts.objects.filter(author__username=postsbox)
+            author_posts = author_posts.order_by("-created").all()
+            page_posts = Paginator(author_posts, CANT_POSTS)
+            list_posts = page_posts.page(posts_page_num).object_list
+            posts = [post.serialize() for post in list_posts]
+            pages_count = page_posts.num_pages
+
+            for post in posts:
+                post['author'] = usr
+            posts = {
+                    "pages": pages_count,
+                    "post-list": posts,
+                    "section": usr['username']
+                }
+        else:
+            # catch -> no posts
+            posts = {
+                    "section": usr['username']
+                }
 
     return JsonResponse( posts ,safe=False)
 
@@ -193,7 +203,9 @@ def like_post(request):
         else:
             post_likes.remove(user_id)
             post.likes.set(post_likes)
-    return JsonResponse({"message": "Like proceced."}, status=201)
+        return JsonResponse({"message": "Like proceced."}, status=201)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=400)
 
 
 @csrf_exempt
@@ -222,7 +234,9 @@ def follow_author(request):
             author_to_follow.followers.set(author_serial_followers)
             current_user_following.remove(author_id)
             current_user.following.set(current_user_following)
-    return JsonResponse({"message": "Follow proceced."}, status=201)
+        return JsonResponse({"message": "Follow proceced."}, status=201)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=400)
 
 
 
@@ -268,7 +282,7 @@ def register(request):
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
-            user.image = request.FILES.get("image", "null")
+            user.image = request.FILES.get("image", "useravatar.png")
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
