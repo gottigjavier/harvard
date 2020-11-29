@@ -22,15 +22,17 @@
 
         <nav id="my-nav" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
             <a class="navbar-brand" href="#">Network</a>
+            
 
             <!-- Toggler/collapsibe Button -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-          
+
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
-              <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
+                    <img src='../network/media/{{ user.image }}' width="30" height="30">
                     <li class="nav-item">
                         <input id="box-user" type="hidden" value={{ user }}>
                         <input id="box-user-id" type="hidden" value={{ request.user.id }}> 
@@ -44,7 +46,7 @@
                     </li>
                 {% endif %}
                 <li id="all-posts" class="nav-item">
-                  <a class="nav-link" href="{% url 'index' %}">All Posts</a>
+                    <a class="nav-link" href="{% url 'index' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li id="all-authors" class="nav-item">
@@ -63,10 +65,10 @@
                         <a class="nav-link" href="{% url 'register' %}">Register</a>
                     </li>
                 {% endif %}
-              </ul>
+                </ul>
             </div>
-          </nav>
-          {% if user.is_authenticated %}
+        </nav>
+        {% if user.is_authenticated %}
         <button class="open-button" onclick="new_post()">New 
             <br> post</button>
         
