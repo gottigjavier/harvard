@@ -17,12 +17,19 @@ document.addEventListener('DOMContentLoaded', function(){
 // Events listeners to one-profile, edit post and delete post -----------------------------
 document.addEventListener('click', event => {
     const elem = event.target;
+    const browserIs = bowser.name;
     if (elem.className.includes('author-event')){
         const usern = elem.innerHTML;
         profiles_box(usern); // seccion = 'one_profile'
     }
     if (elem.className.includes('edit-event')){
-        const $postObject = event.path[4].children[1];
+        if (browserIs == 'Firefox'){
+            // the event structure is a little different in Firefox. If the type is not 'var', it doesn't work
+            var $postObject = event.target.offsetParent.parentElement.parentElement.childNodes[1];
+            console.log($postObject);
+        } else {
+            var $postObject = event.path[4].children[1];
+        }
         const body = $postObject.innerHTML;
         const post_id = $postObject.id;
         $postObject.style.color = 'green';
@@ -30,8 +37,14 @@ document.addEventListener('click', event => {
     }
 
     if (elem.className.includes('delete-event')){
-        const post_id = event.path[4].children[1].id,
-            post_body = event.path[4];
+        if (browserIs == 'Firefox'){
+            // the event structure is a little different in Firefox. If the type is not 'var', it doesn't work
+            var post_id = event.target.offsetParent.parentElement.parentElement.childNodes[1].id;
+            var post_body = event.target.offsetParent.parentElement.parentElement;
+        } else {
+            var post_id = event.path[4].children[1].id;
+            var post_body = event.path[4];
+        }
             post_body.style.animationPlayState = 'running';                    
             post_body.addEventListener('animationend', function () {
                 post_body.remove();
@@ -41,7 +54,6 @@ document.addEventListener('click', event => {
     
 });
 // End Listeners to one-profile, edit post and delete post --------------------------------   
-
 });
 
 // Globals variables ------------------------------------------------------
