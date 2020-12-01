@@ -39,7 +39,7 @@
                     <li class="nav-item">
                         <input id="box-user" type="hidden" value={{ user }}>
                         <input id="box-user-id" type="hidden" value={{ request.user.id }}> 
-                        <a id="user-link" class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                        <a id="user-link" class="nav-link" onclick=profiles_box('{{ user.username }}') href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% else %}
                     <li class="nav-item">
