@@ -5,7 +5,7 @@ from django.urls import path
 from nursing import consumer
 
 websocket_urlPattern = [
-    path('ws/polData/', consumer.dashConsumer),
+    path('ws/polData/', consumer.dashConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
