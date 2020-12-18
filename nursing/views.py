@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.db import IntegrityError
 
 # Create your views here.
 
 def index(request):
     return render(request, 'index.html')
+
+def rooms(request):
+    return render(request, 'rooms.html')
 
 # User Manager ----------------------------------------------------
 def login_view(request):
@@ -22,11 +27,11 @@ def login_view(request):
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            return render(request, "network/login.html", {
+            return render(request, "login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "network/login.html")
+        return render(request, "login.html")
 
 
 def logout_view(request):
@@ -43,7 +48,7 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "network/register.html", {
+            return render(request, "register.html", {
                 "message": "Passwords must match."
             })
 
@@ -53,12 +58,12 @@ def register(request):
             user.image = request.FILES.get("image", "useravatar.png")
             user.save()
         except IntegrityError:
-            return render(request, "network/register.html", {
+            return render(request, "register.html", {
                 "message": "Username already taken."
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "network/register.html")
+        return render(request, "register.html")
 
 # ----------------------------------------------------------------
