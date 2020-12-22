@@ -2,10 +2,19 @@
 {% load static %}
 
 {% block body %}
-    <h1>hey</h1>
-    <div id=data>
+    <h1>Rooms</h1>
+    <div class="container" id=body-container>
+        <div id="head-row" class="row">
+            <div class="col text-center"><h3>Tasks</h3></div>
+            <div class="col-8 text-center"><h3>Rooms Sketch</h3></div>
+            <div class="col text-center"><h3>Calls</h3></div>
+        </div>
+        <div id="room-row" class="row">
+            <div id="programed-tasks" class="col"></div>
+            <div id="rooms-sketch" class="col-10"></div>
+            <div id="calls" class="col"></div>
+        </div>
 
     </div>
-
 {% endblock %}
 </html>

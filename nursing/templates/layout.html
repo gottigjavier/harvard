@@ -23,7 +23,7 @@
         {% endblock %}
     </head>
     <body>
-        <nav id="my-nav" class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <nav id="my-nav" class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-2">
             <a class="navbar-brand" href="#">Nursing</a>
             
 
@@ -35,7 +35,7 @@
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
-                    <img src='../network/media/{{ user.image }}' width="30" height="30">
+                    <img src='{{ user.image }}' width="30" height="30">
                     <li class="nav-item">
                         <input id="box-user" type="hidden" value={{ user }}>
                         <input id="box-user-id" type="hidden" value={{ request.user.id }}> 
@@ -48,9 +48,12 @@
                     </li>
                 {% endif %}
                 <li id="all-posts" class="nav-item">
-                    <a class="nav-link" href="{% url 'index' %}">Nursing</a>
+                    <a class="nav-link" href="{% url 'index' %}"> {{ user.username }} </a>
                 </li>
                 {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                     </li>
@@ -58,8 +61,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Log In</a>
                     </li>
+                {% endif %}
+                {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        <a class="nav-link" href="admin">Admin</a>
                     </li>
                 {% endif %}
                 </ul>

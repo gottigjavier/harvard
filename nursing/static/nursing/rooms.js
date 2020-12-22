@@ -1,34 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const $container = document.createElement('div');
-    $container.setAttribute('class', 'container');
-    
-    for (row = 1; row < 6; row++){
-        const $row = document.createElement('div');
-        $row.setAttribute('class', 'row');
-        for (let col=1; col<5; col++){
-            const $col = document.createElement('div');
-            $col.setAttribute('class', 'col border');
-            const $buttonTrueA = document.createElement('button');
-            $buttonTrueA.setAttribute('class', 'btn btn-success m-2');
-            $buttonTrueA.setAttribute('id', `room${row}${col}bedA`);
-            $buttonTrueA.innerHTML = `Room ${row}${col} Bed A`;
-            const $buttonTrueB = document.createElement('button');
-            $buttonTrueB.setAttribute('class', 'btn btn-success m-2');
-            $buttonTrueB.setAttribute('id', `room${row}${col}bedB`);
-            $buttonTrueB.innerHTML = `Room ${row}${col} Bed B`;
-            const $buttonFalse = document.createElement('button');
-            $buttonFalse.setAttribute('class', 'btn btn-danger m-2');
-            $buttonFalse.setAttribute('id', `room${row}${col}`);
-            $buttonFalse.innerHTML = `room${row}${col}`;
-            $col.appendChild($buttonTrueA);
-            $col.appendChild($buttonTrueB);
-            $col.appendChild($buttonFalse);
-            $row.appendChild($col);
-        }
-    $container.appendChild($row);
-    }
-    document.getElementById('rooms').appendChild($container);
-
+    room_calls();
     document.addEventListener('click', event => {
         const elem = event.target;
         console.log(elem.id);
@@ -44,7 +15,7 @@ const callSocket = new WebSocket(
 
 function call(call_id){
     let state;
-    if(call_id.includes('bed')){
+    if(call_id.includes(',')){
         state = true;
     }
     else{
@@ -54,4 +25,39 @@ function call(call_id){
         'call': state,
         'value': call_id
     }))
+}
+
+function room_calls(){
+    const TOTAL_ROOMS = 30,
+        TOTAL_BEDS = 2;
+        const $containerRooms = document.createElement('div');
+        $containerRooms.setAttribute('class', 'row justify-content-center');
+        const $fragmentRooms = document.createDocumentFragment();
+    
+    for (roomsCounter=1; roomsCounter<=TOTAL_ROOMS; roomsCounter++){
+        const $room = document.createElement('div');
+        //$room.setAttribute('id', `${roomsCounter}`);
+        $room.setAttribute('class', 'col-2 shadow-lg bg-light rounded m-1 justify-content-center');
+        const $room_head = document.createElement('button');
+        $room_head.setAttribute('class', 'btn btn-danger m-2');
+        $room_head.setAttribute('id', `${roomsCounter}`);
+        $room_head.innerHTML = `Room ${roomsCounter}`;
+        const $room_beds = document.createElement('div');
+        $room_beds.setAttribute('class', 'row text-center shadow-lg bg-light rounded justify-content-center');
+        console.log('room  ', roomsCounter);
+        for (bedsCounter=1; bedsCounter<=TOTAL_BEDS; bedsCounter++){
+            const $bed = document.createElement('button');
+            $bed.setAttribute('class', 'btn btn-success m-2');
+            $bed.setAttribute('id', `${roomsCounter},${bedsCounter}`);
+            $bed.innerHTML = `Bed: ${bedsCounter}`;
+            $room_beds.appendChild($bed);
+            console.log('bed  ', bedsCounter);
+        }
+        //$room_head.innerHTML = `<h4> Room ${roomsCounter} </h4>`;
+        $room.appendChild($room_head);
+        $room.appendChild($room_beds);
+        $containerRooms.appendChild($room);
+    }
+    $fragmentRooms.appendChild($containerRooms);
+    document.getElementById('rooms').appendChild($fragmentRooms);
 }

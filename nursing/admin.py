@@ -20,16 +20,16 @@ class MedicalRecordAdmin(admin.ModelAdmin):
     list_filter = ('patient', 'medical_record_id', 'medical_record_file', 'short_diagnosis',)
 
 class CallAdmin(admin.ModelAdmin):
-    list_display = ('call', 'call_time', 'response_time', 'task')
+    list_display = ('call', 'call_time', 'response_time', 'task', 'state')
     ordering = ('-call_time',)
-    search_fields = ('call', 'call_time', 'response_time', 'task')
-    list_filter = ('call', 'call_time', 'response_time', 'task',)
+    search_fields = ('call', 'call_time', 'response_time', 'task', 'state')
+    list_filter = ('call', 'call_time', 'response_time', 'task', 'state',)
 
 class ProgramedTaskAdmin(admin.ModelAdmin):
-    list_display = ('programed_task', 'programed_time', 'response_time', 'task')
+    list_display = ('programed_task', 'programed_time', 'response_time', 'task', 'state')
     ordering = ('-programed_time',)
-    search_fields = ('programed_task', 'programed_time', 'response_time', 'task')
-    list_filter = ('programed_task', 'programed_time', 'response_time', 'task',)
+    search_fields = ('programed_task', 'programed_time', 'response_time', 'task', 'state')
+    list_filter = ('programed_task', 'programed_time', 'response_time', 'task', 'state',)
 
 
 admin.site.register(User, UserAdmin)

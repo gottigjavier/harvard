@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db import IntegrityError
+from .models import *
 
 # Create your views here.
-
+@login_required
 def index(request):
     return render(request, 'index.html')
 
@@ -38,7 +39,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-
+@login_required
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -62,7 +63,7 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return HttpResponseRedirect(reverse("logout"))
     else:
         return render(request, "register.html")
 

@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,6 +27,9 @@ SECRET_KEY = 'xskb%47!iab)*lz(2!!+dsju*11@ep9h=vr9(ll4bt)a_q5aax'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# Login accounts/login to /login
+LOGIN_URL = '/login'
 
 
 # Application definition
@@ -139,5 +142,5 @@ STATIC_URL = '/static/'
 # Images are saved in '/nursing/media/'
 
 MEDIA_URL= '/nursing/media/'
-MEDIA_ROOT= os.path.join(BASE_DIR / 'nursing/', 'media') # Ojo
+MEDIA_ROOT= os.path.join(BASE_DIR + 'nursing/', 'media') # Ojo
 
