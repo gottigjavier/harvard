@@ -3,7 +3,7 @@ import json
 
 class dashConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print(self.scope)
+        #print(self.scope)
         self.groupname = 'dashboard'
         await self.channel_layer.group_add(
             self.groupname,
@@ -21,22 +21,22 @@ class dashConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        call = data['call']
-        val = data['value']
+        state = data['state']
+        source = data['source']
         await self.channel_layer.group_send(
             self.groupname,
             {
                 'type': 'deprocessing',
-                'call': call,
-                'value': val
+                'state': state,
+                'source': source
             }
         )
-        print(type(text_data))
+        print('type text_data: ', type(text_data))
         print('>>',text_data)
-        print(type(data))
+        print('type data: ', type(data))
         print('>>>>>', data)
         #pass
     async def deprocessing(self, event):
-        valOther = event['value']
-        call = event['call']
-        await self.send(text_data=json.dumps({'value': valOther, 'call': call}))
+        valOther = event['source']
+        state = event['state']
+        await self.send(text_data=json.dumps({'source': valOther, 'state': state}))

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, MedicalRecord, Patient, Call, ProgramedTask
+from .models import User, Bed, MedicalRecord, Patient, Call, ProgramedTask
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'date_joined', 'is_active', 'is_staff', 'is_superuser')
@@ -12,6 +12,12 @@ class PatientAdmin(admin.ModelAdmin):
     ordering = ('name',)
     search_fields = ('name', 'social_security_number', 'room_bed')
     list_filter = ('name', 'social_security_number', 'room_bed', 'admission',)
+
+class BedAdmin(admin.ModelAdmin):
+    list_display = ('id_bed', 'bed_patient', 'ocuped')
+    ordering = ('-id_bed',)
+    search_fields = ('id_bed', 'bed_patient', 'ocuped')
+    list_filter = ('id_bed', 'bed_patient', 'ocuped',)
 
 class MedicalRecordAdmin(admin.ModelAdmin):
     list_display = ('patient', 'medical_record_id', 'medical_record_file', 'short_diagnosis')
@@ -33,6 +39,7 @@ class ProgramedTaskAdmin(admin.ModelAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Bed, BedAdmin)
 admin.site.register(MedicalRecord, MedicalRecordAdmin)
 admin.site.register(Patient, PatientAdmin)
 admin.site.register(Call, CallAdmin)

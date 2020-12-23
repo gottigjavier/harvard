@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     room_calls();
     document.addEventListener('click', event => {
         const elem = event.target;
-        console.log(elem.id);
+        //console.log(elem.id);
         call(elem.id);
     });
 });
@@ -22,8 +22,8 @@ function call(call_id){
         state = false;
     }
     callSocket.send(JSON.stringify({
-        'call': state,
-        'value': call_id
+        'state': state,
+        'source': call_id
     }))
 }
 
@@ -44,16 +44,13 @@ function room_calls(){
         $room_head.innerHTML = `Room ${roomsCounter}`;
         const $room_beds = document.createElement('div');
         $room_beds.setAttribute('class', 'row text-center shadow-lg bg-light rounded justify-content-center');
-        console.log('room  ', roomsCounter);
         for (bedsCounter=1; bedsCounter<=TOTAL_BEDS; bedsCounter++){
             const $bed = document.createElement('button');
             $bed.setAttribute('class', 'btn btn-success m-2');
             $bed.setAttribute('id', `${roomsCounter},${bedsCounter}`);
             $bed.innerHTML = `Bed: ${bedsCounter}`;
             $room_beds.appendChild($bed);
-            console.log('bed  ', bedsCounter);
-        }
-        //$room_head.innerHTML = `<h4> Room ${roomsCounter} </h4>`;
+            }
         $room.appendChild($room_head);
         $room.appendChild($room_beds);
         $containerRooms.appendChild($room);

@@ -55,8 +55,20 @@ class Patient(models.Model):
                 "admission": self.admission.strftime("%b %-d %Y, %-I:%M %p"),
                 }         
 
+class Bed(models.Model):
+    id_bed = models.CharField(max_length=10)
+    bed_patient = models.OneToOneField(Patient, related_name='bed_patient', on_delete=models.CASCADE, null=True, blank=True)
+    ocuped = models.BooleanField(default=False)
+
+    def serialize(self):
+        return {
+            "id_bed": self.id_bed,
+            "bed_patient": self.bed_patient,
+            "ocuped": self.ocuped,
+            } 
+
 class MedicalRecord(models.Model):
-    patient = models.OneToOneField(Patient, related_name='patient', on_delete=models.CASCADE)
+    patient = models.OneToOneField(Patient, related_name='record_patient', on_delete=models.CASCADE)
     medical_record_id = models.CharField(max_length=25)
     medical_record_file = models.FileField(storage=fs)
     short_diagnosis = models.TextField()
@@ -70,7 +82,7 @@ class MedicalRecord(models.Model):
             } 
 
 class ProgramedTask(models.Model):
-    programed_task = models.ForeignKey(Patient, related_name='programed_task', on_delete=models.CASCADE)
+    programed_task = models.ForeignKey(Bed, related_name='programed_task', on_delete=models.CASCADE)
     task = models.TextField()
     programed_time = models.DateTimeField()
     response_time = models.DateTimeField(auto_now=True)
@@ -86,7 +98,7 @@ class ProgramedTask(models.Model):
             } 
 
 class Call(models.Model):
-    call = models.ForeignKey(Patient, related_name='call', on_delete=models.CASCADE)
+    call = models.ForeignKey(Bed, related_name='call', on_delete=models.CASCADE)
     task = models.TextField()
     call_time = models.DateTimeField(auto_now_add=True)
     response_time = models.DateTimeField(auto_now=True)
