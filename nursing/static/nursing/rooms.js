@@ -36,7 +36,6 @@ function room_calls(){
     
     for (roomsCounter=1; roomsCounter<=TOTAL_ROOMS; roomsCounter++){
         const $room = document.createElement('div');
-        //$room.setAttribute('id', `${roomsCounter}`);
         $room.setAttribute('class', 'col-2 shadow-lg bg-light rounded m-1 justify-content-center');
         const $room_head = document.createElement('button');
         $room_head.setAttribute('class', 'btn btn-danger m-2');

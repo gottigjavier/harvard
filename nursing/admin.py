@@ -8,10 +8,10 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_active', 'is_superuser', 'date_joined',)
 
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'social_security_number', 'room_bed', 'admission')
+    list_display = ('name', 'social_security_number', 'admission')
     ordering = ('name',)
-    search_fields = ('name', 'social_security_number', 'room_bed')
-    list_filter = ('name', 'social_security_number', 'room_bed', 'admission',)
+    search_fields = ('name', 'social_security_number')
+    list_filter = ('name', 'social_security_number', 'admission',)
 
 class BedAdmin(admin.ModelAdmin):
     list_display = ('id_bed', 'bed_patient', 'ocuped')
@@ -32,10 +32,10 @@ class CallAdmin(admin.ModelAdmin):
     list_filter = ('call', 'call_time', 'response_time', 'task', 'state',)
 
 class ProgramedTaskAdmin(admin.ModelAdmin):
-    list_display = ('programed_task', 'programed_time', 'response_time', 'task', 'state')
+    list_display = ('programed_task', 'programed_time', 'done_time', 'task', 'state')
     ordering = ('-programed_time',)
-    search_fields = ('programed_task', 'programed_time', 'response_time', 'task', 'state')
-    list_filter = ('programed_task', 'programed_time', 'response_time', 'task', 'state',)
+    search_fields = ('programed_task', 'programed_time', 'done_time', 'task', 'state')
+    list_filter = ('programed_task', 'programed_time', 'done_time', 'task', 'state',)
 
 
 admin.site.register(User, UserAdmin)
