@@ -31,9 +31,9 @@ class User(AbstractUser):
 class Patient(models.Model):
     name = models.CharField(max_length=50)
     social_security_number = models.CharField(max_length=20)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(default='useravatar.png',null=True, blank=True)
     admission = models.DateTimeField(auto_now_add=True)
-    #room_bed = models.CharField(max_length=10)
+    short_diagnosis = models.TextField(default='No Diagnosis')
 
     def __str__(self):
         return self.name
@@ -44,15 +44,17 @@ class Patient(models.Model):
                 "name": self.name,
                 "image": self.image.url,
                 "social_number": self.social_security_number,
-                "room_bed": self.room_bed,
-                "admission": self.admission.strftime("%b %-d %Y, %-I:%M %p")
+                #"room_bed": self.room_bed,
+                "admission": self.admission.strftime("%b %-d %Y, %-I:%M %p"),
+                "short_diagnosis": self.short_diagnosis
                 } 
         else:
             return {
                 "name": self.name,
                 "social_number": self.social_security_number,
-                "room_bed": self.room_bed,
-                "admission": self.admission.strftime("%b %-d %Y, %-I:%M %p")
+                #"room_bed": self.room_bed,
+                "admission": self.admission.strftime("%b %-d %Y, %-I:%M %p"),
+                "short_diagnosis": self.short_diagnosis
                 }         
 
 class Bed(models.Model):
@@ -74,7 +76,6 @@ class MedicalRecord(models.Model):
     patient = models.OneToOneField(Patient, related_name='record_patient', on_delete=models.CASCADE)
     medical_record_id = models.CharField(max_length=25, null=True)
     medical_record_file = models.FileField(storage=fs, null=True)
-    short_diagnosis = models.TextField(default='No Diagnosis')
 
     def __str__(self):
         return self.medical_record_id
@@ -83,12 +84,11 @@ class MedicalRecord(models.Model):
         return {
             "patient": self.patient.name,
             "medical_record_id": self.medical_record_id,
-            "medical_record_file": self.medical_record_file,
-            "short_diagnosis": self.short_diagnosis
+            "medical_record_file": self.medical_record_file
             } 
 
-class ProgramedTask(models.Model):
-    programed_task = models.ForeignKey(Bed, related_name='programed_task', on_delete=models.CASCADE)
+class Task(models.Model):
+    bed = models.ForeignKey(Bed, related_name='bed', on_delete=models.CASCADE)
     task = models.TextField(default='Routine Task')
     programed_time = models.DateTimeField()
     done_time = models.DateTimeField(auto_now=True)
@@ -96,7 +96,7 @@ class ProgramedTask(models.Model):
     
     def serialize(self):
         return {
-            "programed_task": self.programed_task.id_bed,
+            "bed": self.bed.id_bed,
             "task": self.task,
             "programed_time": self.programed_time,
             "done_time": self.done_time,

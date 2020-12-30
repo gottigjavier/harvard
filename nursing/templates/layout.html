@@ -71,6 +71,34 @@
             </div>
         </nav>
         
+        {% if user.is_authenticated %}
+        <button class="open-button" onclick="task_edit()">New Task</button>
+        
+        <div class="form-popup" id="myForm">
+            <form action="#" id="my-form" class="form-container">
+                <div>
+                    <h3 id="task-title"></h3>   
+                </div>
+                <div>      
+                    <textarea id="task-text" class="task-text" placeholder="550 chars max" name="task" maxlength="550"></textarea>
+                </div>
+                <div id="form-buttons">                
+                    <button type="submit" id="send" class="task-btn" title="Send">
+                        Accept
+                    </button>
+                    <button type="button" id="close" class="task-btn cancel" title="Close" onclick="closeForm()">
+                        Close
+                    </button>
+                    <button type="button" id="delete" class="task-btn delete" title="Delete" onclick="closeForm()">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+        
+
+
         <div class="body">
             {% block body %}
             {% endblock %}

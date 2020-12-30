@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 const callSocket = new WebSocket(
     'ws://'
     + window.location.host
-    + '/ws/polData/'
+    + '/ws/callData/'
 );
 
 function call(call_id){
@@ -26,6 +26,27 @@ function call(call_id){
         'source': call_id
     }))
 }
+
+const taskSocket = new WebSocket(
+    'ws://'
+    + window.location.host
+    + '/ws/taskData/'
+);
+
+function task(call_id){
+    let state;
+    if(call_id.includes(',')){
+        state = true;
+    }
+    else{
+        state = false;
+    }
+    taskSocket.send(JSON.stringify({
+        'state': state,
+        'source': call_id
+    }))
+}
+
 
 function room_calls(){
     const TOTAL_ROOMS = 30,
