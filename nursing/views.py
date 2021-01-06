@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.db import IntegrityError
 from .models import User, Bed, MedicalRecord, Patient, Call, Task
+import json
 
 # Create your views here.
 @login_required
@@ -51,6 +53,23 @@ def load(request):
         'tasks': serialized_tasks
         }
     return JsonResponse(rooms_state, safe=False)
+
+
+@csrf_exempt
+@login_required
+def edit_task(request):
+    if request.method == "PUT":
+        current_user = User.objects.get(username=request.user)
+        data = json.loads(request.body)
+        task_text = data['upBody']
+        task_id = data['roomBed']
+        task = Task.objects.get(bed__id_bed=task_id)
+        task.task = task_text
+        task.save()
+        return JsonResponse({"message": "Task updated successfully."}, status=201)
+    else:
+        return JsonResponse({"error": "Invalid request method."}, status=400)
+    
 
 
 # User Manager ----------------------------------------------------

@@ -90,7 +90,7 @@ class MedicalRecord(models.Model):
 class Task(models.Model):
     bed = models.ForeignKey(Bed, related_name='bed', on_delete=models.CASCADE)
     task = models.TextField(default='Routine Task')
-    programed_time = models.DateTimeField()
+    programed_time = models.DateTimeField(default='2021-06-30 18:30:00')
     done_time = models.DateTimeField(auto_now=True)
     state = models.BooleanField(default=False)
     

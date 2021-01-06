@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event Listener
     document.addEventListener('click', event => {
         const elem = event;
-        console.log('event', elem.path[1].id);
+        //console.log('event', elem.path[6]);
+        console.log('event-id', elem.path[1].id);
         if (elem.target.className.includes('task-event')){
             if (elem.path[1].id){
                 const taskId = elem.path[1].id;
@@ -48,12 +49,7 @@ function call_manager(){
 const TOTAL_ROOMS = 30,
 TOTAL_BEDS = 4; // per room
 
-let groomsStateList,
-    gListActiveBeds = [],
-    gListActivePatients = [],
-    gListActiveCalls =[],
-    gListActiveTasks = [];
-
+var groomsStateList;
 
 async function rooms_sketch(){
         const $containerRooms = document.createElement('div');
@@ -123,6 +119,7 @@ function active_bed(bedObject){
 
 
 function active_call(callObject){
+    console.log('callObject', callObject);
     const callId = callObject;
     const callIdSplit = callId.split(',');
     const room = callIdSplit[0];
@@ -205,14 +202,97 @@ function active_task(tasksObject){
 
 function edit_task(taskId){
     const taskIdSplit = taskId.split('-');
-    const roomBedSplit = taskIdSplit[1].split(',');
-    clearform();
-    document.getElementById("myForm").style.display = "block";
-    document.getElementById("task-title").innerHTML = `Task        Room: ${roomBedSplit[0]} - Bed: ${roomBedSplit[1]}`;
+    const roomBed = taskIdSplit[1];
+    groomsStateList['tasks'].forEach(taskObject => {
+        if (roomBed === taskObject['bed']){
+            gtaskObject = taskObject;
+            const programedTime = new Date(gtaskObject.programed_time),
+                dateNow = new Date();
+            let [actualDate, actualMonth, actualYear] = dateNow.toLocaleString().split("/");
+            if (actualMonth < 10){
+                actualMonth = `0${actualMonth}`;
+            }
+            if (actualDate < 10){
+                actualDate = `0${actualDate}`;
+            }
+            let [actualDatte, actualHour, actualMinute, actualSecond] = dateNow.toLocaleString().split(/:| /);
+            let actualYearf = actualYear.slice(0,4);
+            let [date, month, year] = programedTime.toLocaleString().split("/");
+            let [datte, hour, minute, second] = programedTime.toLocaleString().split(/:| /);
+            let yearf = year.slice(0,4);
+            //console.log('programedTime', programedTime);
+            //console.log('month, date, year ', month, date, year.slice(0,4));
+            //console.log('hour, minute ', hour, minute);
+            const roomBedSplit = roomBed.split(',');
+            clearform();
+            const $taskDate = document.getElementById('input-date'),
+                $taskTime = document.getElementById('input-time');
+            document.getElementById("myForm").style.display = "block";
+            document.getElementById("task-title").innerHTML = 'Task';
+            document.getElementById("task-place").innerHTML = `Room: ${roomBedSplit[0]} - Bed: ${roomBedSplit[1]}`;
+            $taskDate.setAttribute('min', `${actualYearf}-${actualMonth}-${actualDate}`);
+            $taskDate.setAttribute('value', `${yearf}-${month}-${date}`);
+            console.log('$taskDate', $taskDate);
+            document.getElementById("task-text").focus();
+            body = taskObject.task;
+            document.querySelector('#task-text').value = body;
+
+            //document.querySelector("#send").removeEventListener("click", sendNewTask);
+            document.querySelector("#send").removeEventListener("click", sendEditTask);
+
+            document.querySelector("#send").addEventListener("click", sendEditTask);
+
+
+        }
+    })
+
     
-    console.log(roomBedSplit);
 }
 
+async function sendEditTask(event) {
+    event.preventDefault();
+    const roomBed = gtaskObject.bed;
+    const taskId = `t-${roomBed}`;
+    const upBody = document.querySelector('#task-text').value;
+    gtaskObject.task = upBody;
+    await fetch('http://localhost:8000/edit_task', {
+        method: 'PUT',
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'crossorigin': 'anonymous',
+            'Cache-Control': 'no-cache'
+        },
+        body: JSON.stringify({
+            upBody,
+            roomBed
+        })
+    })
+    .then(response =>  response.json())  
+    .then(result => {
+        document.getElementById(taskId).remove();
+        closeForm(event);
+        active_task(gtaskObject);    
+        const resultKey = Object.keys(result)
+        if (resultKey == 'error') {
+        window.alert(result['error']);
+        }
+        return false;
+    })
+    .catch(error => {
+        closeForm(event);
+        error = 'An ERROR occurred while editing the Task';
+        window.alert(error);        
+    })
+}
+
+function closeForm(event) {
+    event.preventDefault();
+    document.getElementById("myForm").style.display = "none";
+    clearform();
+}
+
+
+
 function clearform() {
-    document.querySelector("#task-text").value = "";
+    document.querySelector("#myForm").value = "";
 }
