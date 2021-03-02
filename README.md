@@ -1,4 +1,4 @@
-# harvard
+# Harvard Final Project. Health App
 
 # Important !!
 
